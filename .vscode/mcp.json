@@ -3,6 +3,11 @@
     "shadcn-ui-server": {
       "command": "npx",
       "args": ["@heilgar/shadcn-ui-mcp-server"]
+    },
+    "origin-ui": {
+      "command": "npx",
+      "args": ["--yes", "github:kelvinchng/origin-ui-mcp"],
+      "env": {}
     }
   }
 }
