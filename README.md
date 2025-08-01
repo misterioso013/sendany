@@ -1,135 +1,142 @@
-# Turborepo starter
+# 📨 sendany
 
-This Turborepo starter is maintained by the Turborepo core team.
+**sendany** é uma aplicação híbrida para envio rápido de arquivos, textos, imagens, links e outros conteúdos entre diferentes dispositivos — desktop, mobile, Android, Ubuntu ou Windows — com suporte tanto a **compartilhamento local via Wi-Fi** quanto a **upload em nuvem (Google Drive)**.
 
-## Using this example
+Desenvolvido para eliminar a dependência de apps de terceiros como WhatsApp, Telegram ou Pastebin para tarefas simples e frequentes.
 
-Run the following command:
+---
 
-```sh
-npx create-turbo@latest
-```
+## 🚀 Funcionalidades
 
-## What's inside?
+| Recurso                        | Nuvem (Drive) | Local (Wi-Fi) |
+|-------------------------------|---------------|---------------|
+| Upload de arquivos            | ✅            | ✅            |
+| Envio de links e textos       | ✅ (.txt/md)  | ✅ (mensagem direta) |
+| QR Code para acesso rápido    | ✅            | ✅            |
+| Copiar/colar cross-device     | ✅            | ✅            |
+| Instalação como PWA           | ✅            | ✅            |
+| Expiração automática (opcional) | 🔜          | 🔜            |
+| Lista de itens enviados       | ✅            | 🔴 (modo volátil) |
+| Notificações push             | 🔜            | 🔜            |
 
-This Turborepo includes the following packages/apps:
+---
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
+## 🧱 Estrutura do Projeto (Monorepo)
 
 ```
-cd my-turborepo
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
+sendany/
+├── apps/
+│   ├── web/            # Frontend Next.js com suporte PWA
+│   └── server/         # Backend Node.js com Drive API + WebSocket
+├── packages/
+│   ├── drive-sdk/      # Wrapper interno para Google Drive
+│   ├── lan-share/      # Biblioteca de comunicação via WebRTC/WebSocket
+│   └── ui/             # Componentes visuais com Tailwind + shadcn/ui
+├── turbo.json          # Configuração de monorepo com Turborepo
+└── README.md
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+````
+
+---
+
+## ⚙️ Tecnologias Utilizadas
+
+- **Frontend:** Next.js 15 (App Router) + Tailwind CSS + shadcn/ui
+- **Backend:** Node.js + Express + WebSocket
+- **Local Sharing:** WebRTC DataChannel (P2P) + WebSocket fallback
+- **Nuvem:** Google Drive API v3 com OAuth2
+- **Build Tooling:** Turborepo + TypeScript + Eslint + Prettier
+- **Outros:** QRCode, Clipboard API, PWA Support
+
+---
+
+## 📦 Como usar
+
+### 1. Clonar o repositório
+
+```bash
+git clone https://github.com/misterioso013/sendany.git
+cd sendany
+````
+
+### 2. Instalar dependências
+
+```bash
+pnpm install
+# ou npm install
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+### 3. Configurar variáveis de ambiente
+
+Crie arquivos `.env` nas pastas `apps/web` e `apps/server`:
+
+#### `apps/server/.env`
 
 ```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+DRIVE_FOLDER_ID=opcional
 ```
 
-### Develop
+### 4. Rodar o ambiente local
 
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
+```bash
+pnpm dev
+# ou
 turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+---
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+## 🌐 Modos de Operação
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+### 🔹 Modo 1 – Google Drive
 
-### Remote Caching
+* Ideal para arquivos maiores, persistência e uso multi-dispositivo.
+* Itens ficam salvos até que sejam excluídos manualmente.
+* Exibição com miniaturas e opção de download direto.
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+### 🔸 Modo 2 – Wi-Fi (LAN Sharing)
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+* Envio peer-to-peer de arquivos e mensagens.
+* Zero upload: os arquivos vão direto de um device para o outro.
+* Ideal para momentos rápidos e conexões locais.
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+---
 
-```
-cd my-turborepo
+## 📱 Como usar no celular
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
+1. Acesse o app via navegador (`http://<seu-ip>:3000`)
+2. Instale como **PWA** no Android (Adicionar à tela inicial)
+3. Escaneie o QR Code de outro dispositivo para receber arquivos
+4. Toque para baixar, copiar ou visualizar
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
+---
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+## 📌 TODO (Roadmap)
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+* [ ] Suporte completo a WebRTC DataChannel (LAN mode)
+* [ ] Notificações push com Firebase
+* [ ] Expiração automática de arquivos (configurável)
+* [ ] Upload direto para Drive em pastas por data ou device
+* [ ] Tema escuro/claro com persistência
+* [ ] Extensão para navegador
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
+---
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
+## 📄 Licença
 
-## Useful Links
+Este projeto está sob a licença [GPL v3](LICENSE).
 
-Learn more about the power of Turborepo:
+---
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+## ✨ Contribuição
+
+Apesar de ser um projeto de uso pessoal, contribuições são bem-vindas para evoluir a ideia. Sinta-se livre para sugerir melhorias, reportar bugs ou abrir PRs.
+
+---
+
+## 🧠 Motivação
+
+Cansado de usar o WhatsApp para mandar arquivos para mim mesmo, criei o sendany para facilitar minha rotina como dev multitarefa. A solução precisava ser leve, instantânea e funcionar tanto online quanto offline.
