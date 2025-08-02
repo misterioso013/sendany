@@ -26,7 +26,7 @@ router.get('/', async (req, res) => {
 
     // Salva em cookie simples (exemplo)
     res.cookie('user', email, { httpOnly: true });
-    res.redirect('/'); // Ou app principal
+    res.redirect(process.env.CLIENT_URL || 'http://localhost:3000'); // Redireciona para o frontend
   } catch (err) {
     console.error(err);
     res.status(500).send('Auth failed');
