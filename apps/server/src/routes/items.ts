@@ -19,7 +19,7 @@ interface MulterRequest extends AuthenticatedRequest {
 }
 
 // Add any type of item to workspace (unified endpoint)
-router.post('/:workspaceId', upload.single('file'), async (req: MulterRequest, res) => {
+router.post('/:workspaceId/items', upload.single('file'), async (req: MulterRequest, res) => {
   try {
     const { workspaceId } = req.params;
     const { content, title, type } = req.body;

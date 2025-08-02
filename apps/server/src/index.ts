@@ -20,7 +20,7 @@ app.use(cookieParser());
 app.use('/api/auth/login', loginRouter);
 app.use('/api/auth/callback', callbackRouter);
 app.use('/api/workspaces', workspacesRouter);
-app.use('/api/workspaces', itemsRouter); // Items are nested under workspaces
+app.use('/api/workspaces', itemsRouter); // Items routes for workspaces
 app.use('/api/user', userRouter);
 
 app.listen(PORT, () => {
