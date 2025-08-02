@@ -8,6 +8,10 @@
       "command": "npx",
       "args": ["--yes", "github:kelvinchng/origin-ui-mcp"],
       "env": {}
+    },
+    "Neon": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote@latest", "https://mcp.neon.tech/mcp"]
     }
   }
 }
