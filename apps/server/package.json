@@ -12,16 +12,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "google-auth-library": "^10.2.0",
     "googleapis": "^154.1.0",
+    "multer": "^2.0.2",
     "ws": "^8.18.3"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
+    "@types/multer": "^2.0.0",
     "@types/node": "^22.15.3",
     "tsx": "^4.20.3",
     "typescript": "^5.9.2"

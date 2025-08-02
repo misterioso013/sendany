@@ -8,10 +8,10 @@ export interface AuthenticatedRequest extends Request {
 }
 
 export function authMiddleware(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-  const email = req.cookies.user;
+  const email = req.cookies?.user;
 
   if(!email || !(email in tokenStore)) {
-    return res.status(401).send('Unauthorized');
+    return res.status(401).json({ error: 'Unauthorized', requiresAuth: true });
   }
 
   const userClient = createClientWithCredentials(tokenStore[email]!);
