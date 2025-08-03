@@ -12,6 +12,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/pg": "^8.15.5",
+    "@types/uuid": "^10.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
@@ -19,6 +21,8 @@
     "google-auth-library": "^10.2.0",
     "googleapis": "^154.1.0",
     "multer": "^2.0.2",
+    "pg": "^8.16.3",
+    "uuid": "^11.1.0",
     "ws": "^8.18.3"
   },
   "devDependencies": {

@@ -1,21 +1,22 @@
 import express from 'express';
 import { authMiddleware, AuthenticatedRequest } from '../middleware/auth';
-import { createWorkspace, getUserWorkspaces, workspaceStore } from '../store/workspace';
+import { WorkspaceService } from '../database/workspace.service';
 
 const router: express.Router = express.Router();
 
 // Get user's workspaces
-router.get('/', authMiddleware, (req: AuthenticatedRequest, res) => {
+router.get('/', authMiddleware, async (req: AuthenticatedRequest, res) => {
   try {
-    const workspaces = getUserWorkspaces(req.userEmail!);
+    const workspaces = await WorkspaceService.getUserWorkspaces(req.userId!);
     res.json(workspaces);
   } catch (error) {
+    console.error('Error fetching workspaces:', error);
     res.status(500).json({ error: 'Failed to fetch workspaces' });
   }
 });
 
 // Create new workspace
-router.post('/', authMiddleware, (req: AuthenticatedRequest, res) => {
+router.post('/', authMiddleware, async (req: AuthenticatedRequest, res) => {
   try {
     const { name, isPrivate = false } = req.body;
     
@@ -23,15 +24,16 @@ router.post('/', authMiddleware, (req: AuthenticatedRequest, res) => {
       return res.status(400).json({ error: 'Workspace name is required' });
     }
     
-    const workspace = createWorkspace(name.trim(), req.userEmail!, isPrivate);
+    const workspace = await WorkspaceService.createWorkspace(name.trim(), req.userId!, isPrivate);
     res.json(workspace);
   } catch (error) {
+    console.error('Error creating workspace:', error);
     res.status(500).json({ error: 'Failed to create workspace' });
   }
 });
 
 // Get specific workspace
-router.get('/:id', authMiddleware, (req: AuthenticatedRequest, res) => {
+router.get('/:id', authMiddleware, async (req: AuthenticatedRequest, res) => {
   try {
     const { id } = req.params;
     
@@ -39,49 +41,16 @@ router.get('/:id', authMiddleware, (req: AuthenticatedRequest, res) => {
       return res.status(400).json({ error: 'Workspace ID is required' });
     }
     
-    const workspace = workspaceStore[id];
+    const workspace = await WorkspaceService.getWorkspaceById(id, req.userId!);
     
     if (!workspace) {
       return res.status(404).json({ error: 'Workspace not found' });
     }
     
-    // Check if user has access
-    if (!workspace.members.includes(req.userEmail!)) {
-      return res.status(403).json({ error: 'Access denied' });
-    }
-    
     res.json(workspace);
   } catch (error) {
+    console.error('Error fetching workspace:', error);
     res.status(500).json({ error: 'Failed to fetch workspace' });
-  }
-});
-
-// Join workspace by ID
-router.post('/:id/join', authMiddleware, (req: AuthenticatedRequest, res) => {
-  try {
-    const { id } = req.params;
-    
-    if (!id) {
-      return res.status(400).json({ error: 'Workspace ID is required' });
-    }
-    
-    const workspace = workspaceStore[id];
-    
-    if (!workspace) {
-      return res.status(404).json({ error: 'Workspace not found' });
-    }
-    
-    if (workspace.isPrivate) {
-      return res.status(403).json({ error: 'Cannot join private workspace' });
-    }
-    
-    if (!workspace.members.includes(req.userEmail!)) {
-      workspace.members.push(req.userEmail!);
-    }
-    
-    res.json(workspace);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to join workspace' });
   }
 });
 
