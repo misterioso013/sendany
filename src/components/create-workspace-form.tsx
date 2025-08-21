@@ -471,7 +471,7 @@ export function CreateWorkspaceForm({ userId }: CreateWorkspaceFormProps) {
                         placeholder="untitled.md"
                         className="flex-1 max-w-md p-2 border border-border/30 rounded bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20"
                       />
-                      <span className="text-xs text-muted-foreground px-2 py-1 bg-muted/20 rounded">
+                      <span className="text-xs text-muted-foreground px-2 py-1 bg-muted/20 rounded hidden sm:block">
                         {getLanguageFromFilename(textFiles[activeTextFileIndex].filename)}
                       </span>
                     </div>
@@ -501,6 +501,7 @@ export function CreateWorkspaceForm({ userId }: CreateWorkspaceFormProps) {
                     {/* Code Editor */}
                     <CodeEditor
                       value={textFiles[activeTextFileIndex].content}
+                      filename={textFiles[activeTextFileIndex].filename}
                       onChange={(value) => updateTextFile(textFiles[activeTextFileIndex].id, { content: value })}
                       language={getLanguageFromFilename(textFiles[activeTextFileIndex].filename)}
                     />

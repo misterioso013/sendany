@@ -71,14 +71,14 @@ export function UserDashboard({ workspaces, currentPage, totalPages, totalWorksp
                 Home
               </Link>
               <div className="w-px h-4 bg-border/50" />
-              <h1 className="text-lg font-medium text-foreground">Dashboard</h1>
+              <h1 className="text-lg font-medium text-foreground hidden sm:block">Dashboard</h1>
             </div>
             
             <div className="flex items-center gap-4">
               <Link href="/new">
                 <Button className="bg-foreground text-background hover:bg-foreground/90">
-                  <Plus className="w-4 h-4 mr-2" />
-                  New workspace
+                  <Plus className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:block">New workspace</span>
                 </Button>
               </Link>
               <UserButton />

@@ -147,7 +147,7 @@ export function CodeEditor({
       <div className="flex items-center justify-between bg-muted px-3 py-2 border-b">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium">{filename || "untitled"}</span>
-          <span className="text-xs text-muted-foreground bg-background px-2 py-1 rounded">
+          <span className="text-xs text-muted-foreground bg-background px-2 py-1 rounded hidden sm:block">
             {language}
           </span>
         </div>
@@ -170,7 +170,7 @@ export function CodeEditor({
                   setSplitView(!splitView);
                   if (!splitView) setShowPreview(true);
                 }}
-                className={`text-xs px-3 py-1 rounded hover:bg-accent transition-colors ${
+                className={`hidden sm:block text-xs px-3 py-1 rounded hover:bg-accent transition-colors ${
                   splitView ? "bg-primary text-primary-foreground" : "bg-background"
                 }`}
               >
@@ -225,6 +225,7 @@ export function CodeEditor({
               theme={isDark ? oneDark : undefined}
               placeholder={placeholder}
               editable={!readonly}
+              minHeight="320px"
               basicSetup={{
                 lineNumbers: true,
                 foldGutter: true,
@@ -275,6 +276,7 @@ export function CodeEditor({
           theme={isDark ? oneDark : undefined}
           placeholder={placeholder}
           editable={!readonly}
+          minHeight="320px"
           basicSetup={{
             lineNumbers: true,
             foldGutter: true,

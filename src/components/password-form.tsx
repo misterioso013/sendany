@@ -29,16 +29,16 @@ export function PasswordForm({ error, isEdit = false }: PasswordFormProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="w-full max-w-md p-8 space-y-6">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <div className="w-full max-w-md p-6 md:p-8 space-y-6">
         <div className="text-center">
           <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center">
-              <Lock className="w-8 h-8 text-muted-foreground" />
+            <div className="w-12 h-12 md:w-16 md:h-16 bg-muted rounded-full flex items-center justify-center">
+              <Lock className="w-6 h-6 md:w-8 md:h-8 text-muted-foreground" />
             </div>
           </div>
-          <h1 className="text-2xl font-bold">Password Protected</h1>
-          <p className="text-muted-foreground mt-2">
+          <h1 className="text-xl md:text-2xl font-bold">Password Protected</h1>
+          <p className="text-sm md:text-base text-muted-foreground mt-2">
             This workspace is password protected. Please enter the password to {isEdit ? 'edit' : 'continue'}.
           </p>
         </div>

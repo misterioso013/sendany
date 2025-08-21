@@ -13,7 +13,10 @@ import {
   File,
   Eye,
   ExternalLink,
-  Share
+  Share,
+  Menu,
+  X,
+  ChevronLeft
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -88,12 +91,18 @@ export function WorkspaceViewer({ workspace, files }: WorkspaceViewerProps) {
   const [activeFileId, setActiveFileId] = useState<string | null>(
     files.length > 0 ? files[0].id : null
   );
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   const activeFile = files.find(f => f.id === activeFileId);
 
   const handleShare = (slug: string) => {
     navigator.clipboard.writeText(`${window.location.origin}/${slug}`);
     // You could add a toast notification here
+  };
+
+  const handleFileSelect = (fileId: string) => {
+    setActiveFileId(fileId);
+    setIsSidebarOpen(false); // Close sidebar on mobile after selection
   };
 
   const handleDownload = (file: WorkspaceFile) => {
@@ -139,7 +148,7 @@ export function WorkspaceViewer({ workspace, files }: WorkspaceViewerProps) {
     if (file.file_url && canPreviewFile(file.mime_type, file.filename)) {
       if (file.mime_type?.startsWith('image/')) {
         return (
-          <div className="flex items-center justify-center h-full p-8">
+          <div className="flex items-center justify-center h-full p-4 md:p-8">
             <img
               src={file.file_url}
               alt={file.filename}
@@ -195,10 +204,10 @@ export function WorkspaceViewer({ workspace, files }: WorkspaceViewerProps) {
             file.filename?.split('.').pop()?.toLowerCase() || ''
           ))) {
         return (
-          <div className="flex items-center justify-center h-full p-8">
+          <div className="flex items-center justify-center h-full p-4 md:p-8">
             <iframe
               src={file.file_url}
-              className="w-full h-full min-h-[400px] rounded-lg shadow-lg"
+              className="w-full h-full min-h-[300px] md:min-h-[400px] rounded-lg shadow-lg"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               title={file.filename}
@@ -211,14 +220,14 @@ export function WorkspaceViewer({ workspace, files }: WorkspaceViewerProps) {
     // Default file view
     const FileIconComponent = getFileIcon(file.mime_type, file.filename);
     return (
-      <div className="flex flex-col items-center justify-center h-full text-center p-8">
-        <FileIconComponent className="w-16 h-16 text-muted-foreground mb-4" />
-        <h3 className="text-lg font-medium mb-2">{file.filename}</h3>
+      <div className="flex flex-col items-center justify-center h-full text-center p-4 md:p-8">
+        <FileIconComponent className="w-12 h-12 md:w-16 md:h-16 text-muted-foreground mb-4" />
+        <h3 className="text-base md:text-lg font-medium mb-2">{file.filename}</h3>
         <p className="text-sm text-muted-foreground mb-4">
           {formatFileSize(file.file_size)}
         </p>
         {file.file_url && (
-          <div className="space-y-2">
+          <div className="space-y-2 w-full max-w-xs">
             <Button onClick={() => handleDownload(file)} className="w-full">
               <Download className="w-4 h-4 mr-2" />
               Download File
@@ -239,11 +248,11 @@ export function WorkspaceViewer({ workspace, files }: WorkspaceViewerProps) {
 
   if (files.length === 0) {
     return (
-      <div className="h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <div className="flex-1 min-w-0">
-            <h1 className="text-xl font-bold truncate">{workspace.title}</h1>
+          <div className="flex-1 min-w-0 pr-4">
+            <h1 className="text-lg md:text-xl font-bold truncate">{workspace.title}</h1>
             {workspace.description && (
               <p className="text-sm text-muted-foreground truncate">{workspace.description}</p>
             )}
@@ -252,14 +261,15 @@ export function WorkspaceViewer({ workspace, files }: WorkspaceViewerProps) {
             variant="outline"
             size="sm"
             onClick={() => handleShare(workspace.slug)}
+            className="shrink-0"
           >
-            <Share className="w-4 h-4 mr-2" />
-            Share
+            <Share className="w-4 h-4 md:mr-2" />
+            <span className="hidden md:inline">Share</span>
           </Button>
         </div>
 
         {/* Empty state */}
-        <div className="flex-1 flex items-center justify-center">
+        <div className="flex-1 flex items-center justify-center p-4">
           <div className="text-center">
             <FileText className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
             <h3 className="text-lg font-medium mb-2">No files found</h3>
@@ -271,33 +281,83 @@ export function WorkspaceViewer({ workspace, files }: WorkspaceViewerProps) {
   }
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex-1 min-w-0">
-          <h1 className="text-xl font-bold truncate">{workspace.title}</h1>
-          {workspace.description && (
-            <p className="text-sm text-muted-foreground truncate">{workspace.description}</p>
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          {files.length > 1 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsSidebarOpen(true)}
+              className="lg:hidden shrink-0"
+            >
+              <Menu className="w-4 h-4" />
+            </Button>
           )}
+          <div className="flex-1 min-w-0">
+            <h1 className="text-lg md:text-xl font-bold truncate">{workspace.title}</h1>
+            {workspace.description && (
+              <p className="text-sm text-muted-foreground truncate">{workspace.description}</p>
+            )}
+          </div>
         </div>
         <Button
           variant="outline"
           size="sm"
           onClick={() => handleShare(workspace.slug)}
+          className="shrink-0"
         >
-          <Share className="w-4 h-4 mr-2" />
-          Share
+          <Share className="w-4 h-4 md:mr-2" />
+          <span className="hidden md:inline">Share</span>
         </Button>
       </div>
 
-      <div className="flex-1 flex">
-        {/* Sidebar */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Mobile Sidebar Overlay */}
+        {files.length > 1 && isSidebarOpen && (
+          <div className="fixed inset-0 z-50 lg:hidden">
+            <div className="absolute inset-0 bg-black/50" onClick={() => setIsSidebarOpen(false)} />
+            <div className="absolute left-0 top-0 h-full w-80 max-w-[80vw] bg-background border-r shadow-lg">
+              <div className="flex items-center justify-between p-4 border-b">
+                <h3 className="font-medium">Files ({files.length})</h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsSidebarOpen(false)}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+              <div className="p-2 overflow-y-auto">
+                {files.map((file) => {
+                  const FileIconComponent = getFileIcon(file.mime_type, file.filename);
+                  return (
+                    <button
+                      key={file.id}
+                      className={cn(
+                        "w-full flex items-center gap-3 p-3 rounded-md text-left hover:bg-muted/50 transition-colors",
+                        activeFileId === file.id && "bg-muted"
+                      )}
+                      onClick={() => handleFileSelect(file.id)}
+                    >
+                      <FileIconComponent className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                      <span className="truncate text-sm">{file.filename}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Desktop Sidebar */}
         {files.length > 1 && (
-          <div className="w-64 border-r bg-muted/20">
+          <div className="hidden lg:block w-64 border-r bg-muted/20 shrink-0">
             <div className="p-3 border-b">
               <h3 className="font-medium text-sm">Files ({files.length})</h3>
             </div>
-            <div className="p-2">
+            <div className="p-2 overflow-y-auto">
               {files.map((file) => {
                 const FileIconComponent = getFileIcon(file.mime_type, file.filename);
                 return (
@@ -319,25 +379,35 @@ export function WorkspaceViewer({ workspace, files }: WorkspaceViewerProps) {
         )}
 
         {/* Main content */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-0">
           {activeFile && (
             <>
               {/* File header */}
-              <div className="flex items-center justify-between p-4 border-b bg-background/50">
+              <div className="flex items-center justify-between p-3 md:p-4 border-b bg-background/50">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
+                  {files.length > 1 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsSidebarOpen(true)}
+                      className="lg:hidden shrink-0"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </Button>
+                  )}
                   {(() => {
                     const FileIconComponent = getFileIcon(activeFile.mime_type, activeFile.filename);
-                    return <FileIconComponent className="w-5 h-5 text-muted-foreground flex-shrink-0" />;
+                    return <FileIconComponent className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground flex-shrink-0" />;
                   })()}
                   <div className="flex-1 min-w-0">
-                    <h2 className="font-medium truncate">{activeFile.filename}</h2>
-                    <p className="text-xs text-muted-foreground">
+                    <h2 className="text-sm md:text-base font-medium truncate">{activeFile.filename}</h2>
+                    <p className="text-xs text-muted-foreground truncate">
                       {formatFileSize(activeFile.file_size)}
                       {activeFile.mime_type && ` • ${activeFile.mime_type}`}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                   {canPreviewFile(activeFile.mime_type, activeFile.filename) && (
                     <Eye className="w-4 h-4 text-green-600" />
                   )}
@@ -346,8 +416,8 @@ export function WorkspaceViewer({ workspace, files }: WorkspaceViewerProps) {
                     size="sm"
                     onClick={() => handleDownload(activeFile)}
                   >
-                    <Download className="w-4 h-4 mr-2" />
-                    Download
+                    <Download className="w-4 h-4 md:mr-2" />
+                    <span className="hidden md:inline">Download</span>
                   </Button>
                 </div>
               </div>
