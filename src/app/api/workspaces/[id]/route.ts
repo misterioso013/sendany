@@ -48,7 +48,7 @@ export async function PUT(
 
     // Create a map of current files by ID
     const currentFileMap = new Map(currentFiles.map(f => [f.id, f]));
-    const newFileIds = new Set(newFiles.map((f: any) => f.id).filter(Boolean));
+    const newFileIds = new Set(newFiles.map((f: { id?: string }) => f.id).filter(Boolean));
 
     // Delete files that are no longer present
     for (const currentFile of currentFiles) {

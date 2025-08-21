@@ -4,7 +4,7 @@ import { getWorkspacesByUser, getWorkspacesCountByUser } from "@/lib/databse";
 import { UserDashboard } from "@/components/user-dashboard-minimal";
 
 interface DashboardPageProps {
-  searchParams: { page?: string };
+  searchParams: Promise<{ page?: string }>;
 }
 
 export default async function DashboardPage({ searchParams }: DashboardPageProps) {
@@ -14,7 +14,8 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     redirect("/handler/sign-in");
   }
 
-  const currentPage = parseInt(searchParams.page || "1");
+  const resolvedSearchParams = await searchParams;
+  const currentPage = parseInt(resolvedSearchParams.page || "1");
   const limit = 10;
   
   const [workspaces, totalWorkspaces] = await Promise.all([

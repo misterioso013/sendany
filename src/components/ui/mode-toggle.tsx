@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch"
 
 export default function ModeToggle() {
   const id = useId()
-  const { theme, setTheme, resolvedTheme } = useTheme()
+  const { setTheme, resolvedTheme } = useTheme()
   const [checked, setChecked] = useState<boolean>(false)
   const [mounted, setMounted] = useState(false)
 

@@ -4,7 +4,6 @@ import {
   getExpiredWorkspaces, 
   deleteWorkspaceCompletely,
   getUserDriveTokens,
-  getWorkspaceFiles
 } from '@/lib/databse';
 
 // This endpoint should be called by a cron job
@@ -21,7 +20,7 @@ export async function POST(request: NextRequest) {
     const expiredWorkspaces = await getExpiredWorkspaces();
     
     let cleanedCount = 0;
-    let errors: string[] = [];
+    const errors: string[] = [];
 
     for (const workspace of expiredWorkspaces) {
       try {

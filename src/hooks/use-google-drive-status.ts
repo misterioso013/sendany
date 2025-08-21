@@ -41,7 +41,7 @@ export function useGoogleDriveStatus(): GoogleDriveStatus {
           error: 'Failed to check Google Drive status',
         });
       }
-    } catch (error) {
+    } catch {
       setStatus({
         isAvailable: false,
         isConnected: false,

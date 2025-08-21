@@ -8,30 +8,12 @@ import { FileUploader } from "@/components/file-uploader-minimal";
 import { CodeEditor } from "@/components/code-editor";
 import { createWorkspace, createWorkspaceFile } from "@/lib/databse";
 import { useGoogleDriveStatus } from "@/hooks/use-google-drive-status";
+import type { FileWithPreview } from "@/hooks/use-file-upload";
 import { Upload, FileText, Settings, Save, X, AlertCircle, Cloud, Plus, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface CreateWorkspaceFormProps {
   userId: string;
-}
-
-interface WorkspaceData {
-  title: string;
-  description?: string;
-  slug?: string;
-  files: Array<{
-    filename: string;
-    content?: string;
-    file_type: "text" | "code" | "markdown" | "file";
-    language?: string;
-    file_size?: number;
-    file_url?: string;
-    mime_type?: string;
-    order_index: number;
-  }>;
-  is_public: boolean;
-  expires_at?: Date | null;
-  password?: string | null;
 }
 
 type ContentType = "upload" | "content";
@@ -40,7 +22,7 @@ export function CreateWorkspaceForm({ userId }: CreateWorkspaceFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState("Untitled workspace");
   const [activeContentType, setActiveContentType] = useState<ContentType>("upload");
-  const [files, setFiles] = useState<any[]>([]);
+  const [files, setFiles] = useState<FileWithPreview[]>([]);
   
   // Multiple text files support
   const [textFiles, setTextFiles] = useState<Array<{
@@ -135,7 +117,16 @@ export function CreateWorkspaceForm({ userId }: CreateWorkspaceFormProps) {
     setIsLoading(true);
     
     try {
-      const workspaceFiles: any[] = [];
+      const workspaceFiles: Array<{
+        filename: string;
+        content?: string;
+        file_type: "text" | "code" | "markdown" | "file";
+        language?: string;
+        file_size?: number;
+        file_url?: string;
+        mime_type?: string;
+        order_index: number;
+      }> = [];
       
       // First, create workspace
       const workspace = await createWorkspace({
@@ -393,9 +384,14 @@ export function CreateWorkspaceForm({ userId }: CreateWorkspaceFormProps) {
                       className="flex items-center justify-between p-3 border border-border/30 rounded-lg"
                     >
                       <div>
-                        <p className="font-medium">{file.name}</p>
+                        <p className="font-medium">
+                          {file.file instanceof globalThis.File ? file.file.name : file.file.name}
+                        </p>
                         <p className="text-sm text-muted-foreground">
-                          {(file.size / 1024 / 1024).toFixed(2)} MB
+                          {file.file instanceof globalThis.File ? 
+                            (file.file.size / 1024 / 1024).toFixed(2) : 
+                            ((file.file.size || 0) / 1024 / 1024).toFixed(2)
+                          } MB
                         </p>
                       </div>
                       <Button

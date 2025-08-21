@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
-import { Cloud, CloudOff, HardDrive, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel } from "@/components/ui/alert-dialog";
+import { Cloud, CloudOff, HardDrive, AlertCircle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface StorageInfo {
@@ -229,7 +229,7 @@ export function GoogleDriveConnection({ className }: GoogleDriveConnectionProps)
 
                 <div className="p-3 bg-muted rounded-lg">
                   <p className="text-xs text-muted-foreground">
-                    Files are stored in a "SendAny" folder in your Google Drive. You maintain full control and can delete them anytime.
+                    Files are stored in a &quot;SendAny&quot; folder in your Google Drive. You maintain full control and can delete them anytime.
                   </p>
                 </div>
               </div>

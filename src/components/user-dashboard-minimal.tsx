@@ -35,7 +35,7 @@ interface UserDashboardProps {
   totalWorkspaces: number;
 }
 
-export function UserDashboard({ user, workspaces, currentPage, totalPages, totalWorkspaces }: UserDashboardProps) {
+export function UserDashboard({ workspaces, currentPage, totalPages, totalWorkspaces }: UserDashboardProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();

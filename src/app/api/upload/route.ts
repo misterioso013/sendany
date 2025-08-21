@@ -154,7 +154,7 @@ export async function POST(request: NextRequest) {
 }
 
 // Get user's storage information
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const user = await stackServerApp.getUser();
     if (!user) {

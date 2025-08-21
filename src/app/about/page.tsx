@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Share2, Lock, Clock, Code, Upload, Users } from "lucide-react";
+import { ArrowLeft, Share2, Lock, Code, Upload, Users } from "lucide-react";
 
 export default function AboutPage() {
   return (

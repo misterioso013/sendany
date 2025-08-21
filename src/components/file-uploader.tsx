@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import { useFileUpload, type FileWithPreview } from "@/hooks/use-file-upload";
 import { Button } from "@/components/ui/button";
-import { Upload, X, File, Image, Code, FileText } from "lucide-react";
+import { Upload, X, File, Image as ImageIcon, Code, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface FileUploaderProps {
@@ -51,7 +51,7 @@ export function FileUploader({
   }, [inputRef]);
 
   const getFileIcon = (type: string) => {
-    if (type.startsWith("image/")) return <Image className="w-5 h-5" />;
+    if (type.startsWith("image/")) return <ImageIcon className="w-5 h-5" />;
     if (type.includes("text/") || type.includes("json") || type.includes("javascript")) {
       return <Code className="w-5 h-5" />;
     }

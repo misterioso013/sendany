@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { EditorView } from "@codemirror/view";
 import { EditorState } from "@codemirror/state";
@@ -193,7 +193,8 @@ export function CodeEditor({
             <ReactMarkdown 
               remarkPlugins={[remarkGfm]}
               components={{
-                code: ({ node, inline, className, children, ...props }: any) => {
+                // @ts-expect-error - ReactMarkdown types conflict
+                code: ({ inline, className, children, ...props }) => {
                   return !inline && className ? (
                     <CodeBlock 
                       className={className} 
@@ -244,7 +245,8 @@ export function CodeEditor({
               <ReactMarkdown 
                 remarkPlugins={[remarkGfm]}
                 components={{
-                  code: ({ node, inline, className, children, ...props }: any) => {
+                  // @ts-expect-error - ReactMarkdown types conflict
+                  code: ({ inline, className, children, ...props }) => {
                     return !inline && className ? (
                       <CodeBlock 
                         className={className} 

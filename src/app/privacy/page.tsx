@@ -286,7 +286,7 @@ export default function PrivacyPage() {
               <h3 className="text-lg font-medium text-foreground mb-3">Google Drive API</h3>
               <p className="text-muted-foreground font-light">
                 File uploads use Google Drive API. We only request the minimum permissions needed 
-                (file creation and management). Review Google's 
+                (file creation and management). Review Google&apos;s 
                 <Link href="https://policies.google.com/privacy" className="text-foreground hover:underline"> privacy policy</Link> 
                 for their data handling practices.
               </p>
@@ -347,7 +347,7 @@ export default function PrivacyPage() {
           </h2>
           <p className="text-muted-foreground mb-6 font-light">
             If you have any questions about this privacy policy or how we handle your data, 
-            please don't hesitate to reach out.
+            please don&apos;t hesitate to reach out.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
