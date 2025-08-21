@@ -1,36 +1,274 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+#SendAny
 
-## Getting Started
+> Share anything with anyone - The perfect combination of Google Drive, Pastebin, and GitHub Gist.
 
-First, run the development server:
+SendAny is a minimalist and elegant platform for sharing content online. Create workspaces to share text, code, and files with full control over privacy, password protection, and expiration times.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Features
+
+### For Logged In Users
+- **Workspaces**: Create workspaces similar to GitHub's Gist
+- **Multiple Files**: Add as many files as you want to each workspace
+- **Code Editor**: Syntax highlighting for multiple languages
+- **Markdown**: Full Markdown support with real-time preview
+- **File Upload**: Upload any file type
+- **Privacy Control**: Choose between public or private
+- **Password Protection**: Add a password for sensitive content
+- **Expiration**: Set an automatic expiration date
+- **Custom URLs**: Edit the slug for more user-friendly URLs
+
+### For Logged Out Users
+- **Link Access**: View shared workspaces
+- **Password Protection**: Enter a password when required
+- **Clean Interface**: Optimized viewing experience
+
+## 🛠️ Technologies
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS, Radix UI
+- **Authentication**: Stack Auth (@stackframe/stack)
+- **Database**: PostgreSQL (Neon)
+- **Editor**: CodeMirror with syntax highlighting
+- **Upload**: Integrated upload system
+- **Deployment**: Vercel ready
+
+## 📋 Prerequisites
+
+- Node.js 18+
+- pnpm (recommended)
+- Neon Database account
+- Stack Auth account
+- Google Cloud Console project (for Google Drive integration)
+
+## 🔐 Google Drive Configuration
+
+To allow users to upload files, you need to set up the Google Drive integration:
+
+### 1. Create a Project in the Google Cloud Console
+
+1. Access [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select an existing one
+3. Enable the Google Drive API:
+- Go to "APIs & Services" > "Library"
+- Search for "Google Drive API"
+- Click "Enable"
+
+### 2. Configure OAuth 2.0
+
+1. Go to "APIs & Services" > "Credentials"
+2. Click "Create Credentials" > "OAuth 2.0 Client IDs"
+3. Configure:
+- Application type: Web application
+- Name: SendAny
+- Authorized redirect URIs:
+- http://localhost:3000/api/auth/google/callback (development)
+- https://yourdomain.com/api/auth/google/callback (production)
+
+### 3. Configure OAuth Consent Screen
+
+1. Go to the "OAuth consent screen"
+2. Choose "External" (if it's a public app)
+3. Fill in the required information:
+- **App name**: SendAny
+- **User support email**: your-email@example.com
+- **Developer contact information**: your-email@example.com
+
+### 4. Add Scopes
+
+On the OAuth consent screen, add the following scopes:
+- `https://www.googleapis.com/auth/drive.file`
+- `https://www.googleapis.com/auth/userinfo.email`
+
+### 5. Environment Variables
+
+Add the credentials to your `.env.local`:
+
+```env
+# Google Drive Integration
+GOOGLE_CLIENT_ID=your_client_id_here
+GOOGLE_CLIENT_SECRET=your_client_secret_here
+GOOGLE_REDIRECT_URI=http://localhost:3000/api/auth/google/callback
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 💾 File Storage
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### How It Works
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Authentication**: User connects their Google Drive account
+2. **Structure**: Files are saved in `/SendAny/{workspace_title}/`
+3. **Limits**:
+- 100MB per file
+- 500MB per workspace
+- 5GB total per user
+4. **Control**: User maintains full control of files in their Drive
 
-## Learn More
+### Automatic Cleanup
 
-To learn more about Next.js, take a look at the following resources:
+To configure automatic cleanup of expired workspaces:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+# Configure a cron job to call:
+curl -X POST "https://yourdomain.com/api/cleanup" \
+-H "x-api-key: your-cleanup-api-key"
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🚀 Installation
 
-## Deploy on Vercel
+### 1. Clone the repository
+```bash
+git clone <your-repository>
+cd sendany
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 2. Install the dependencies
+```bash
+pnpm install
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 3. Configure the environment variables
+Create a `.env.local` file in the project root using the provided `.env.example` as a reference.
+
+### 4. Configure the database
+Run the SQL provided in `database/schema.sql` in your Neon database:
+
+```bash
+# Access your Neon console and execute the contents of the file:
+cat database/schema.sql
+```
+
+### 5. Run the project
+```bash
+pnpm dev
+```
+
+The project will be available at `http://localhost:3000`
+
+## 🗄️ Structure Database Tables
+
+### Main Tables
+
+#### `workspaces`
+- Stores workspace information
+- Controls visibility, expiration, and password protection
+- Relates to Stack Auth users
+
+#### `workspace_files`
+- Stores files within workspaces
+- Supports text, code, markdown, and uploads
+- Maintains file order
+
+#### `workspace_views`
+- Basic view analytics
+- Tracks IPs and user agents
+
+
+## 🎨 Core Components
+
+### WorkspaceEditor
+Main editor that combines:
+- Sidebar file list
+- CodeMirror editor
+- Upload system
+- Workspace settings
+
+### CodeEditor
+- Automatic syntax highlighting
+- Multiple language support
+- Markdown preview
+- Light/dark themes
+
+### FileUploader
+- Drag & drop
+- File validation
+- Image preview
+- Size control
+
+## 🔒 Security
+
+- **Authentication**: Stack Auth with JWT
+- **Password Protection**: bcrypt for hashing
+- **Sanitization**: Input validation
+- **Rate Limiting**: Ready for deployment
+- **CORS**: Proper configuration
+
+## 🚀 Deploy
+
+### Vercel (Recommended)
+```bash
+# Install the Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+
+# Configure environment variables in the dashboard Vercel
+```
+
+## 🧪 Development
+
+### Available Scripts
+```bash
+pnpm dev # Development
+pnpm build # Build for production
+pnpm start # Production server
+pnpm lint # Linting
+```
+
+### Stack Auth Configuration
+```bash
+# Run to automatically configure Stack Auth
+npx @stackframe/init-stack . --no-browser
+```
+
+## 📝 Usage
+
+### 1. Create Workspace
+- Log in or create an account
+- Click "Create Workspace"
+- Add files (text, code, uploads)
+- Set privacy and options
+- Save and share
+
+### 2. Share
+- Copy the generated link
+- Set a password if necessary
+- Set an expiration date
+- Share with whoever you want
+
+### 3. Access Content
+- Anyone can access via the link
+- Enter a password if prompted
+- View all workspace content
+
+## 🤝 Contribution
+
+1. Fork the project
+2. Create a branch (`git checkout -b feature/new-feature`)
+3. Commit your changes (`git commit -am 'Adds new feature'`)
+4. Push to the branch (`git push origin feature/new-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the GPL v3. See the [LICENSE] file for more details.
+
+## 🔧 Complete Technical Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **Runtime**: React 19
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS 4
+- **Components**: Radix UI + shadcn/ui
+- **Editor**: CodeMirror 6
+- **Markdown**: react-markdown + remark-gfm
+- **Authentication**: Stack Auth
+- **Database**: PostgreSQL (Neon)
+- **ORM**: Neon Serverless Driver
+- **Validation**: Zod
+- **Encryption**: bcryptjs
+- **IDs**: nanoid
+- **Deployment**: Vercel
+- **Manager**: pnpm
+
+---
+**SendAny** - Share anything with anyone. 🚀
