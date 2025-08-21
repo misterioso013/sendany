@@ -1,4 +1,4 @@
-#SendAny
+# SendAny
 
 > Share anything with anyone - The perfect combination of Google Drive, Pastebin, and GitHub Gist.
 
@@ -15,7 +15,7 @@ SendAny is a minimalist and elegant platform for sharing content online. Create 
 - **Privacy Control**: Choose between public or private
 - **Password Protection**: Add a password for sensitive content
 - **Expiration**: Set an automatic expiration date
-- **Custom URLs**: Edit the slug for more user-friendly URLs
+- **Custom URLs**: Edit the slug for more user-friendly URLs (pending)
 
 ### For Logged Out Users
 - **Link Access**: View shared workspaces
@@ -25,7 +25,7 @@ SendAny is a minimalist and elegant platform for sharing content online. Create 
 ## 🛠️ Technologies
 
 - **Frontend**: Next.js 15, React 19, TypeScript
-- **Styling**: Tailwind CSS, Radix UI
+- **Styling**: Tailwind CSS, Shadcn UI + Origin UI
 - **Authentication**: Stack Auth (@stackframe/stack)
 - **Database**: PostgreSQL (Neon)
 - **Editor**: CodeMirror with syntax highlighting
@@ -34,10 +34,10 @@ SendAny is a minimalist and elegant platform for sharing content online. Create 
 
 ## 📋 Prerequisites
 
-- Node.js 18+
+- Node.js 22+
 - pnpm (recommended)
 - Neon Database account
-- Stack Auth account
+- Stack Auth account or Neon Auth (beta)
 - Google Cloud Console project (for Google Drive integration)
 
 ## 🔐 Google Drive Configuration
@@ -116,7 +116,7 @@ curl -X POST "https://yourdomain.com/api/cleanup" \
 
 ### 1. Clone the repository
 ```bash
-git clone <your-repository>
+git clone https://github.com/misterioso013/sendany.git
 cd sendany
 ```
 
@@ -250,7 +250,7 @@ npx @stackframe/init-stack . --no-browser
 
 ## 📄 License
 
-This project is licensed under the GPL v3. See the [LICENSE] file for more details.
+This project is licensed under the GPL v3. See the [LICENSE](/LICENSE) file for more details.
 
 ## 🔧 Complete Technical Stack
 
@@ -258,7 +258,7 @@ This project is licensed under the GPL v3. See the [LICENSE] file for more detai
 - **Runtime**: React 19
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS 4
-- **Components**: Radix UI + shadcn/ui
+- **Components**: Shadcn UI + Origin UI
 - **Editor**: CodeMirror 6
 - **Markdown**: react-markdown + remark-gfm
 - **Authentication**: Stack Auth
