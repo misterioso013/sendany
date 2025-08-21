@@ -1,6 +1,21 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Share2, Lock, Code, Upload, Users } from "lucide-react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About",
+  description: "Learn about SendAny - the perfect combination of Google Drive, Pastebin, and GitHub Gist. Our mission is to make file and code sharing simple, secure, and beautiful.",
+  keywords: ["about sendany", "file sharing platform", "code sharing", "mission", "team"],
+  openGraph: {
+    title: "About | SendAny",
+    description: "Learn about SendAny and our mission to make file and code sharing simple, secure, and beautiful.",
+    type: "website",
+  },
+  alternates: {
+    canonical: "https://sendany.all.dev.br/about",
+  },
+};
 
 export default function AboutPage() {
   return (

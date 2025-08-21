@@ -4,6 +4,19 @@ import { stackServerApp } from "@/stack";
 import { CreateWorkspaceForm } from "@/components/create-workspace-form";
 import { ArrowLeft } from "lucide-react";
 import ModeToggle from "@/components/ui/mode-toggle";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Create New Workspace",
+  description: "Create a new workspace to share files, code, and documents. Upload files, write code, and collaborate with others on SendAny.",
+  keywords: ["create workspace", "new workspace", "file sharing", "code sharing", "upload files"],
+  robots: "noindex, nofollow", // Private creation area
+  openGraph: {
+    title: "Create New Workspace | SendAny",
+    description: "Create a new workspace to share files, code, and documents",
+    type: "website",
+  },
+};
 
 export default async function NewWorkspacePage() {
   const user = await stackServerApp.getUser();

@@ -1,6 +1,21 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Shield, Eye, Database, Clock, Share2, Trash2 } from "lucide-react";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description: "Learn how SendAny protects your privacy and handles your data. We are committed to transparency and your data security.",
+  keywords: ["privacy policy", "data protection", "sendany privacy", "security"],
+  openGraph: {
+    title: "Privacy Policy | SendAny",
+    description: "Learn how SendAny protects your privacy and handles your data.",
+    type: "website",
+  },
+  alternates: {
+    canonical: "https://sendany.all.dev.br/privacy",
+  },
+};
 
 export default function PrivacyPage() {
   return (

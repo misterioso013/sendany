@@ -2,6 +2,19 @@ import { redirect } from "next/navigation";
 import { stackServerApp } from "@/stack";
 import { getWorkspacesByUser, getWorkspacesCountByUser } from "@/lib/databse";
 import { UserDashboard } from "@/components/user-dashboard-minimal";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: "Manage your SendAny workspaces. View, edit, and organize all your shared files, code, and documents in one place.",
+  keywords: ["dashboard", "workspace management", "file organization", "sendany"],
+  robots: "noindex, nofollow",
+  openGraph: {
+    title: "Dashboard | SendAny",
+    description: "Manage your SendAny workspaces",
+    type: "website",
+  },
+};
 
 interface DashboardPageProps {
   searchParams: Promise<{ page?: string }>;

@@ -4,10 +4,128 @@ import { getWorkspace, getWorkspaceFiles, verifyWorkspacePassword, recordWorkspa
 import { WorkspaceViewer } from "@/components/workspace-viewer";
 import { PasswordForm } from "@/components/password-form";
 import { headers } from "next/headers";
+import { Metadata } from "next";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ password?: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  
+  try {
+    const workspace = await getWorkspace(slug);
+    
+    if (!workspace) {
+      return {
+        title: 'Workspace Not Found | SendAny',
+        description: 'The requested workspace could not be found.',
+        robots: 'noindex, nofollow',
+      };
+    }
+
+    // Check if workspace is expired
+    if (workspace.expires_at && new Date(workspace.expires_at) < new Date()) {
+      return {
+        title: 'Workspace Expired | SendAny',
+        description: 'This workspace has expired and is no longer available.',
+        robots: 'noindex, nofollow',
+      };
+    }
+
+    // For private or password-protected workspaces
+    if (!workspace.is_public || workspace.password_hash) {
+      return {
+        title: `${workspace.title} | SendAny`,
+        description: 'A private workspace on SendAny. Access restricted.',
+        robots: 'noindex, nofollow',
+      };
+    }
+
+    // Get files for public workspaces
+    const files = await getWorkspaceFiles(workspace.id);
+    const fileCount = files.length;
+    const hasCode = files.some(f => f.file_type === 'code');
+    const hasMarkdown = files.some(f => f.file_type === 'markdown');
+    const hasFiles = files.some(f => f.file_type === 'file');
+    
+    // Create dynamic description
+    let description = workspace.description || `Shared workspace containing ${fileCount} file${fileCount !== 1 ? 's' : ''}`;
+    
+    if (fileCount > 0) {
+      const types = [];
+      if (hasCode) types.push('code');
+      if (hasMarkdown) types.push('documentation');
+      if (hasFiles) types.push('files');
+      
+      if (types.length > 0) {
+        description += ` including ${types.join(', ')}`;
+      }
+    }
+    
+    description += ' - Shared securely on SendAny.';
+
+    const title = `${workspace.title} | SendAny`;
+    const url = `https://sendany.all.dev.br/${workspace.slug}`;
+
+    return {
+      title,
+      description,
+      keywords: [
+        'file sharing',
+        'code sharing',
+        'workspace',
+        'SendAny',
+        workspace.title,
+        ...(hasCode ? ['code', 'programming', 'development'] : []),
+        ...(hasMarkdown ? ['documentation', 'markdown'] : []),
+        ...(hasFiles ? ['file upload', 'file sharing'] : []),
+      ],
+      authors: [{ name: 'SendAny' }],
+      creator: 'SendAny',
+      publisher: 'SendAny',
+      robots: workspace.is_public ? 'index, follow' : 'noindex, nofollow',
+      openGraph: {
+        title,
+        description,
+        url,
+        siteName: 'SendAny',
+        type: 'website',
+        locale: 'en_US',
+        images: [
+          {
+            url: '/og-workspace.png',
+            width: 1200,
+            height: 630,
+            alt: `${workspace.title} - SendAny Workspace`,
+          },
+        ],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+        creator: '@RVictor013',
+        images: ['/og-workspace.png'],
+      },
+      alternates: {
+        canonical: url,
+      },
+      other: {
+        'workspace:file_count': fileCount.toString(),
+        'workspace:type': workspace.is_public ? 'public' : 'private',
+        'workspace:created': workspace.created_at?.toISOString() || '',
+      },
+    };
+  } catch (error) {
+    console.error('Error generating metadata for workspace:', error);
+    return {
+      title: 'SendAny Workspace',
+      description: 'Share files, code, and documents securely with SendAny.',
+      robots: 'noindex, nofollow',
+    };
+  }
 }
 
 async function WorkspaceContent({ slug, password }: { slug: string; password?: string }) {

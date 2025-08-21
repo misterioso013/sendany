@@ -1,23 +1,72 @@
-# robots.txt for SendAny
-# https://sendany.app
+# Robots.txt for SendAny - https://sendany.all.dev.br
 
 User-agent: *
 Allow: /
-Allow: /about
-Allow: /privacy
+Allow: /*.css
+Allow: /*.js
+Allow: /*.png
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.gif
+Allow: /*.svg
+Allow: /*.ico
+Allow: /*.woff
+Allow: /*.woff2
 
-# Disallow authentication and API routes
-Disallow: /api/
-Disallow: /handler/
+# Block private areas
 Disallow: /dashboard
 Disallow: /new
+Disallow: /api/
+Disallow: /handler/
+Disallow: /_next/
+Disallow: /.well-known/
 
-# Disallow private workspace pages (dynamic routes)
-# Allow public workspaces to be indexed but crawlers will need proper meta tags
-Allow: /*/
+# Block auth and admin routes
+Disallow: */edit
+Disallow: */password
+Disallow: /auth/
+Disallow: /login
+Disallow: /register
 
-# Crawl delay to be respectful
+# Allow public workspaces (crawlers can discover via sitemap)
+Allow: /[a-zA-Z0-9_-]*
+
+# Crawl delay (be respectful)
 Crawl-delay: 1
 
 # Sitemap location
-Sitemap: https://sendany.app/sitemap.xml
+Sitemap: https://sendany.all.dev.br/sitemap.xml
+
+# Additional search engines
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
+
+User-agent: Slurp
+Allow: /
+Crawl-delay: 2
+
+User-agent: DuckDuckBot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 5
+
+# Block aggressive crawlers
+User-agent: ia_archiver
+Disallow: /
+
+User-agent: ScreamingFrogSEOSpider
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /

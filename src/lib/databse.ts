@@ -337,3 +337,28 @@ export async function getWorkspaceSize(workspace_id: string): Promise<number> {
   
   return parseInt(result[0]?.total_size || '0');
 }
+
+// Get public workspaces for sitemap
+export async function getPublicWorkspaces(): Promise<Workspace[]> {
+  const result = await sql`
+    SELECT * FROM workspaces 
+    WHERE is_public = true 
+    AND password_hash IS NULL
+    AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)
+    ORDER BY updated_at DESC
+    LIMIT 1000
+  `;
+  
+  return result.map(workspace => ({
+    id: workspace.id,
+    slug: workspace.slug,
+    title: workspace.title,
+    description: workspace.description,
+    user_id: workspace.user_id,
+    password_hash: workspace.password_hash,
+    is_public: workspace.is_public,
+    expires_at: workspace.expires_at ? new Date(workspace.expires_at) : undefined,
+    created_at: new Date(workspace.created_at),
+    updated_at: new Date(workspace.updated_at),
+  }));
+}
