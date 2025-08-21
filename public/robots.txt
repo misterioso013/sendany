@@ -1,0 +1,23 @@
+# robots.txt for SendAny
+# https://sendany.app
+
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /privacy
+
+# Disallow authentication and API routes
+Disallow: /api/
+Disallow: /handler/
+Disallow: /dashboard
+Disallow: /new
+
+# Disallow private workspace pages (dynamic routes)
+# Allow public workspaces to be indexed but crawlers will need proper meta tags
+Allow: /*/
+
+# Crawl delay to be respectful
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://sendany.app/sitemap.xml
