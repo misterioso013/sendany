@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { StackProvider, StackTheme } from "@stackframe/stack";
+import { stackServerApp } from "../stack";
 import { Alice } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const alice = Alice({
   variable: "--font-alice",
@@ -10,7 +13,14 @@ const alice = Alice({
 
 export const metadata: Metadata = {
   title: "SendAny - Share anything with anyone",
-  description: "Share anything with anyone",
+  description: "The perfect combination of Google Drive, Pastebin, and GitHub Gist. Create workspaces to share text, code, and files in one beautiful, minimalist interface.",
+  keywords: ["share", "files", "code", "text", "gist", "pastebin", "workspace"],
+  authors: [{ name: "SendAny" }],
+  openGraph: {
+    title: "SendAny - Share anything with anyone",
+    description: "Create workspaces to share text, code, and files in one beautiful, minimalist interface.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -23,7 +33,18 @@ export default function RootLayout({
       <body
         className={`${alice.variable} antialiased`}
       >
-        {children}
+        <StackProvider app={stackServerApp}>
+          <StackTheme>
+            <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+            </ThemeProvider>
+          </StackTheme>
+        </StackProvider>
       </body>
     </html>
   );
