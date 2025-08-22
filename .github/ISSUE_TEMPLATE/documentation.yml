@@ -1,0 +1,110 @@
+name: 📚 Documentation
+description: Suggest documentation improvements
+title: "[DOCS] "
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve our documentation! Good documentation is essential for an open source project.
+
+  - type: dropdown
+    id: doc_type
+    attributes:
+      label: Documentation Type
+      description: What type of documentation needs to be improved?
+      options:
+        - README.md
+        - CONTRIBUTING.md
+        - Code (comments/JSDoc)
+        - API Documentation
+        - Installation guides
+        - Usage examples
+        - FAQ
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Current Problem
+      description: What is confusing, missing, or incorrect in the documentation?
+      placeholder: |
+        - Missing information about...
+        - Unclear instructions in...
+        - Example doesn't work...
+        - Outdated documentation...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Suggested Improvement
+      description: How could the documentation be improved?
+      placeholder: |
+        - Add section about...
+        - Clarify instructions for...
+        - Include example of...
+        - Update information about...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: audience
+    attributes:
+      label: Target Audience
+      description: Who would this improvement be most useful for?
+      options:
+        - Beginner developers
+        - Experienced developers
+        - End users
+        - Administrators/DevOps
+        - Contributors
+        - Everyone
+    validations:
+      required: true
+
+  - type: textarea
+    id: location
+    attributes:
+      label: Location
+      description: Where should this documentation be located?
+      placeholder: |
+        - Specific file: path/to/file.md
+        - New section in README
+        - New file in docs/ folder
+        - Code comments in src/...
+
+  - type: checkboxes
+    id: help
+    attributes:
+      label: How can I help?
+      description: How can you contribute to this improvement?
+      options:
+        - label: I can write the content
+        - label: I can review existing content
+        - label: I can provide examples
+        - label: I can translate to other languages
+        - label: I'm just reporting the problem
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Examples/References
+      description: Know of similar documentation that does this well?
+      placeholder: |
+        - Project X has good documentation about Y
+        - Link to example: https://...
+        - Similar structure in: ...
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any additional information
+      placeholder: |
+        - Does this confusion appear frequently in issues?
+        - Are there accessibility concerns?
+        - Internationalization considerations?

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/misterioso013/sendany/discussions
+    about: For general discussions, ideas and community questions
+  - name: 🔒 Security Issues
+    url: https://github.com/misterioso013/sendany/security/advisories/new
+    about: To report security vulnerabilities (private)

@@ -1,0 +1,81 @@
+name: ❓ Question
+description: Ask a question about the project
+title: "[QUESTION] "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have a question about SendAny? We're here to help!
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Initial checks
+      description: Before asking the question, have you checked
+      options:
+        - label: I read the documentation (README.md, CONTRIBUTING.md)
+        - label: I searched existing issues
+        - label: I searched GitHub discussions
+
+  - type: dropdown
+    id: question_type
+    attributes:
+      label: Question Type
+      description: What type of question do you have?
+      options:
+        - Installation/Setup
+        - How to use a feature
+        - Integration with other tools
+        - Contributing/Development
+        - Architecture/Technical decisions
+        - Licensing
+        - Support/Troubleshooting
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What is your question?
+      placeholder: |
+        Be specific and provide enough context so we can help you.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Provide more context about your situation
+      placeholder: |
+        - What are you trying to do?
+        - What problem are you facing?
+        - What is your experience level with the technologies involved?
+        - Environment information (OS, Node version, etc.)
+
+  - type: textarea
+    id: attempted
+    attributes:
+      label: What have you already tried?
+      description: What solutions have you already attempted?
+      placeholder: |
+        - I tried doing X but...
+        - I searched Y and found Z, but...
+        - I followed tutorial A but it didn't work because...
+
+  - type: textarea
+    id: expected_outcome
+    attributes:
+      label: Expected Outcome
+      description: What do you expect to be able to do?
+      placeholder: |
+        Describe what you would like to achieve.
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Information
+      description: Any other information that might be useful

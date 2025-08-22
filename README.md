@@ -1,4 +1,8 @@
 # SendAny
+![GitHub issues](https://img.shields.io/github/issues/misterioso013/sendany)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/misterioso013/sendany)
+![GitHub license](https://img.shields.io/github/license/misterioso013/sendany)
+![GitHub stars](https://img.shields.io/github/stars/misterioso013/sendany)
 
 > Share anything with anyone - The perfect combination of Google Drive, Pastebin, and GitHub Gist.
 
@@ -240,13 +244,15 @@ npx @stackframe/init-stack . --no-browser
 - Enter a password if prompted
 - View all workspace content
 
-## 🤝 Contribution
+## 🤝 Contributing
+Interested in contributing? Check out our [Contributing Guide](CONTRIBUTING.md)!
 
-1. Fork the project
-2. Create a branch (`git checkout -b feature/new-feature`)
-3. Commit your changes (`git commit -am 'Adds new feature'`)
-4. Push to the branch (`git push origin feature/new-feature`)
-5. Open a Pull Request
+## 🐛 Issues
+Found a bug? Have a feature request? [Create an issue](https://github.com/misterioso013/sendany/issues/new/choose)!
+
+## 💬 Community
+- [Discussions](https://github.com/misterioso013/sendany/discussions) - For questions and ideas
+- [Discord](https://discord.gg/F4WBXeyaVa) - For real-time chat
 
 ## 📄 License
 

@@ -1,0 +1,114 @@
+name: ✨ Feature Request
+description: Suggest a new feature or improvement
+title: "[FEATURE] "
+labels: ["enhancement", "feature-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting a new feature! Your idea can help make SendAny even better.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Initial Checks
+      description: Please confirm that you've checked these items
+      options:
+        - label: I searched for similar feature requests and found no duplicates
+          required: true
+        - label: This feature makes sense for SendAny as a whole
+          required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem/Need
+      description: What problem would this feature solve?
+      placeholder: |
+        Clearly describe the problem or need you're facing.
+        Ex: "It's frustrating when... because..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: How would you like this feature to work?
+      placeholder: |
+        Describe in detail how you imagine the feature should work.
+        Be specific about the expected behavior.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How would you rate the importance of this feature?
+      options:
+        - Low - would be nice to have
+        - Medium - would significantly improve the experience
+        - High - essential for my use of the project
+    validations:
+      required: true
+
+  - type: dropdown
+    id: complexity
+    attributes:
+      label: Estimated Complexity
+      description: How do you assess the implementation complexity?
+      options:
+        - Simple - small UI adjustments or existing functionality
+        - Medium - new feature that can use existing code
+        - Complex - requires significant changes or new architecture
+        - Don't know how to assess
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: What other solutions did you consider?
+      placeholder: |
+        - Alternative 1: ...
+        - Alternative 2: ...
+        - Why is the proposed solution better than alternatives?
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Examples/References
+      description: Do you know other products that do something similar?
+      placeholder: |
+        - GitHub does X in Y way
+        - VSCode has a similar feature in Z
+        - Links to examples, screenshots, etc.
+
+  - type: checkboxes
+    id: implementation
+    attributes:
+      label: Implementation
+      description: How can you help with this feature?
+      options:
+        - label: I can help with design/mockups
+        - label: I can help with implementation
+        - label: I can help with testing
+        - label: I can help with documentation
+        - label: I'm just suggesting the idea
+
+  - type: textarea
+    id: mockups
+    attributes:
+      label: Mockups/Screenshots
+      description: If you have visual ideas, share them here
+      placeholder: Drag and drop images, Figma links, or describe visually
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any additional information about this feature
+      placeholder: |
+        - Is this feature standard in similar tools?
+        - Are there performance or security considerations?
+        - Impact on other parts of the system?

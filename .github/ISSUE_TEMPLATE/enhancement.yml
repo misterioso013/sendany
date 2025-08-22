@@ -1,0 +1,136 @@
+name: 🚀 Enhancement
+description: Suggest improvements to existing features
+title: "[ENHANCEMENT] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for suggesting an improvement! Small enhancements can have a big impact on user experience.
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component/Area
+      description: Which part of SendAny would this improvement affect?
+      options:
+        - Workspace Editor
+        - Workspace Viewer
+        - File Upload
+        - Authentication
+        - Interface/UI
+        - Performance
+        - Security
+        - Google Drive Integration
+        - Database
+        - API
+        - Mobile/Responsiveness
+        - Accessibility
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: current_behavior
+    attributes:
+      label: Current Behavior
+      description: How does the feature currently work?
+      placeholder: |
+        Describe how the current feature works and what its limitations are.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_improvement
+    attributes:
+      label: Proposed Improvement
+      description: How could this feature be improved?
+      placeholder: |
+        Describe specifically how you would like the feature to be improved.
+        Be specific about behavior changes, interface, performance, etc.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: improvement_type
+    attributes:
+      label: Improvement Type
+      description: What type of improvement is this?
+      options:
+        - UX/UI - user experience improvement
+        - Performance - speed optimization
+        - Accessibility - better support for users with disabilities
+        - Mobile - better mobile experience
+        - Developer Experience - easier development
+        - Security - improve security aspects
+        - Usability - make it easier to use
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: benefits
+    attributes:
+      label: Benefits
+      description: What would be the benefits of this improvement?
+      placeholder: |
+        - Improves user experience because...
+        - Reduces confusion about...
+        - Makes it more efficient...
+        - Saves time by...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Estimated Impact
+      description: What is the expected impact of this improvement?
+      options:
+        - Low - subtle improvement
+        - Medium - noticeable improvement for some users
+        - High - significant improvement for most users
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: breaking_changes
+    attributes:
+      label: Breaking Changes
+      description: Could this improvement break existing functionality?
+      options:
+        - label: This improvement may break compatibility
+        - label: This improvement requires data migration
+        - label: This improvement changes the public API
+        - label: This improvement does not affect existing functionality
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Examples/Use Cases
+      description: Can you provide specific examples or use cases?
+      placeholder: |
+        - When a user does X, it would be better if...
+        - In scenario Y, this improvement would allow...
+        - Specific use case: ...
+
+  - type: textarea
+    id: implementation_ideas
+    attributes:
+      label: Implementation Ideas
+      description: Do you have ideas about how to implement this improvement?
+      placeholder: |
+        - Could be implemented using...
+        - Changes needed in...
+        - Technical considerations...
+        (Not required, but any insight is welcome!)
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any additional information about this improvement
+      placeholder: |
+        - Is this improvement common in similar tools?
+        - Are there technical limitations to consider?
+        - Impact on other parts of the system?
