@@ -2,6 +2,7 @@
 ![GitHub issues](https://img.shields.io/github/issues/misterioso013/sendany)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/misterioso013/sendany)
 ![GitHub license](https://img.shields.io/github/license/misterioso013/sendany)
+[![wakatime](https://wakatime.com/badge/github/misterioso013/sendany.svg)](https://wakatime.com/badge/github/misterioso013/sendany)
 ![GitHub stars](https://img.shields.io/github/stars/misterioso013/sendany)
 
 > Share anything with anyone - The perfect combination of Google Drive, Pastebin, and GitHub Gist.
