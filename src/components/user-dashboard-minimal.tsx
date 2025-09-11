@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { UserButton } from "@stackframe/stack";
 import { GoogleDriveConnection } from "@/components/google-drive-connection";
-import type { Workspace } from "@/lib/databse";
+import type { Workspace } from "@/lib/database";
 import ModeToggle from "@/components/ui/mode-toggle";
 
 interface UserData {

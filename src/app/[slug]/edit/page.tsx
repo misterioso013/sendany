@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
-import { getWorkspace, getWorkspaceFiles, verifyWorkspacePassword } from "@/lib/databse";
+import { getWorkspace, getWorkspaceFiles, verifyWorkspacePassword } from "@/lib/database";
 import { WorkspaceEditor } from "@/components/workspace-editor";
 import { PasswordForm } from "@/components/password-form";
 import { stackServerApp } from "@/stack";
@@ -34,7 +34,7 @@ async function WorkspaceEditContent({ slug, password }: { slug: string; password
       return <PasswordForm slug={slug} isEdit={true} />;
     }
 
-    const isValidPassword = await verifyWorkspacePassword(slug, password);
+    const isValidPassword = await verifyWorkspacePassword(workspace, password);
     if (!isValidPassword) {
       return <PasswordForm slug={slug} error="Invalid password" isEdit={true} />;
     }

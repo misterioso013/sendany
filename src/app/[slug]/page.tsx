@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { getWorkspace, getWorkspaceFiles, verifyWorkspacePassword, recordWorkspaceView } from "@/lib/databse";
+import { getWorkspace, getWorkspaceFiles, verifyWorkspacePassword, recordWorkspaceView } from "@/lib/database";
 import { WorkspaceViewer } from "@/components/workspace-viewer";
 import { PasswordForm } from "@/components/password-form";
 import { headers } from "next/headers";
@@ -146,7 +146,7 @@ async function WorkspaceContent({ slug, password }: { slug: string; password?: s
       return <PasswordForm slug={slug} />;
     }
 
-    const isValidPassword = await verifyWorkspacePassword(slug, password);
+    const isValidPassword = await verifyWorkspacePassword(workspace, password);
     if (!isValidPassword) {
       return <PasswordForm slug={slug} error="Invalid password" />;
     }
@@ -159,7 +159,11 @@ async function WorkspaceContent({ slug, password }: { slug: string; password?: s
   const ip = forwardedFor?.split(",")[0] || realIp || "unknown";
   const userAgent = headersList.get("user-agent") || "unknown";
   
-  await recordWorkspaceView(workspace.id, ip, userAgent);
+  await recordWorkspaceView({
+    workspace_id: workspace.id,
+    ip_address: ip,
+    user_agent: userAgent
+  });
 
   // Get workspace files
   const files = await getWorkspaceFiles(workspace.id);

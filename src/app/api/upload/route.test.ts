@@ -9,7 +9,7 @@ vi.mock("@/stack", () => ({
   },
 }));
 
-vi.mock("@/lib/databse", () => ({
+vi.mock("@/lib/database", () => ({
   getWorkspaceById: vi.fn(),
   createWorkspaceFile: vi.fn(),
   getUserStorageUsage: vi.fn(),
@@ -17,6 +17,7 @@ vi.mock("@/lib/databse", () => ({
   updateUserStorageUsed: vi.fn(),
   updateWorkspaceDriveFolder: vi.fn(),
   updateWorkspaceFileDriveId: vi.fn(),
+  getUserDriveTokens: vi.fn(),
 }));
 
 vi.mock("@/lib/google-drive", () => ({
@@ -35,7 +36,7 @@ const {
   createWorkspaceFile,
   getUserStorageUsage,
   getWorkspaceSize,
-} = await import("@/lib/databse");
+} = await import("@/lib/database");
 const { driveService } = await import("@/lib/google-drive");
 
 describe("/api/upload Route", () => {
@@ -51,6 +52,8 @@ describe("/api/upload Route", () => {
     title: "Test Workspace",
     slug: "test-workspace",
     is_public: true,
+    password_hash: null,
+    expires_at: null,
     created_at: new Date(),
     updated_at: new Date(),
   };
@@ -133,7 +136,7 @@ describe("/api/upload Route", () => {
   });
 
   it("should return 404 for non-existent workspace", async () => {
-    vi.mocked(getWorkspaceById).mockResolvedValue(undefined);
+    vi.mocked(getWorkspaceById).mockResolvedValue(null);
 
     const formData = new FormData();
     formData.append("file", new File(["test"], "test.txt"));

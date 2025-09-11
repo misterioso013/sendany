@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import { getPublicWorkspaces, Workspace } from '@/lib/databse'
+import { getPublicWorkspaces, Workspace } from '@/lib/database'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://sendany.all.dev.br'

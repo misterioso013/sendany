@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { driveService } from '@/lib/google-drive';
-import { saveUserDriveTokens } from '@/lib/databse';
+import { saveUserDriveTokens } from '@/lib/database';
 import { stackServerApp } from '@/stack';
 
 export async function GET(request: NextRequest) {

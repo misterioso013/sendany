@@ -8,10 +8,12 @@ export interface Workspace {
   id: string;
   title: string;
   slug: string;
+  description?: string;
   user_id: string | null;
   is_public: boolean;
   password_hash: string | null;
   expires_at: Date | null;
+  drive_folder_id?: string;
   created_at: Date;
   updated_at: Date;
 }
@@ -19,12 +21,15 @@ export interface Workspace {
 export interface WorkspaceFile {
   id: string;
   workspace_id: string;
-  name: string;
-  content: string;
-  language: string;
-  type: "text" | "upload";
-  file_order: number;
-  google_drive_file_id: string | null;
+  filename: string;
+  content?: string;
+  file_type: "text" | "code" | "markdown" | "file";
+  language?: string;
+  file_size?: number;
+  file_url?: string;
+  mime_type?: string;
+  drive_file_id?: string;
+  order_index: number;
   created_at: Date;
   updated_at: Date;
 }
@@ -39,8 +44,9 @@ export interface WorkspaceView {
 
 // Workspace operations
 export async function createWorkspace(data: {
-  title: string;
+  title?: string;
   slug?: string;
+  description?: string;
   user_id?: string | null;
   is_public?: boolean;
   password?: string;
@@ -53,8 +59,8 @@ export async function createWorkspace(data: {
     : null;
 
   const result = await sql`
-    INSERT INTO workspaces (id, title, slug, user_id, is_public, password_hash, expires_at)
-    VALUES (${id}, ${data.title}, ${slug}, ${data.user_id ?? null}, ${
+    INSERT INTO workspaces (id, title, slug, description, user_id, is_public, password_hash, expires_at)
+    VALUES (${id}, ${data.title || "Untitled"}, ${slug}, ${data.description || null}, ${data.user_id ?? null}, ${
     data.is_public ?? true
   }, ${password_hash}, ${data.expires_at ?? null})
     RETURNING *
@@ -97,6 +103,10 @@ export async function updateWorkspace(
     updates.push(`slug = $${values.length + 1}`);
     values.push(data.slug);
   }
+  if (data.description !== undefined) {
+    updates.push(`description = $${values.length + 1}`);
+    values.push(data.description);
+  }
   if (data.is_public !== undefined) {
     updates.push(`is_public = $${values.length + 1}`);
     values.push(data.is_public);
@@ -108,6 +118,10 @@ export async function updateWorkspace(
   if (data.expires_at !== undefined) {
     updates.push(`expires_at = $${values.length + 1}`);
     values.push(data.expires_at);
+  }
+  if (data.drive_folder_id !== undefined) {
+    updates.push(`drive_folder_id = $${values.length + 1}`);
+    values.push(data.drive_folder_id);
   }
 
   if (updates.length === 0) {
@@ -152,29 +166,33 @@ export async function verifyWorkspacePassword(
 // File operations
 export async function createWorkspaceFile(data: {
   workspace_id: string;
-  name: string;
-  content: string;
+  filename: string;
+  content?: string;
+  file_type?: "text" | "code" | "markdown" | "file";
   language?: string;
-  type?: "text" | "upload";
-  google_drive_file_id?: string | null;
+  file_size?: number;
+  file_url?: string;
+  mime_type?: string;
+  drive_file_id?: string;
+  order_index?: number;
 }): Promise<WorkspaceFile> {
   const id = nanoid();
 
-  // Get the next file order
-  const orderResult = await sql`
-    SELECT COALESCE(MAX(file_order), 0) + 1 as next_order 
-    FROM workspace_files 
-    WHERE workspace_id = ${data.workspace_id}
-  `;
-  const file_order = (orderResult[0] as any).next_order;
+  // Get the next file order if not provided
+  const order_index = data.order_index !== undefined ? data.order_index : 
+    (await sql`
+      SELECT COALESCE(MAX(order_index), 0) + 1 as next_order 
+      FROM workspace_files 
+      WHERE workspace_id = ${data.workspace_id}
+    `)[0]?.next_order || 0;
 
   const result = await sql`
-    INSERT INTO workspace_files (id, workspace_id, name, content, language, type, file_order, google_drive_file_id)
-    VALUES (${id}, ${data.workspace_id}, ${data.name}, ${data.content}, ${
-    data.language || "text"
-  }, ${data.type || "text"}, ${file_order}, ${
-    data.google_drive_file_id || null
-  })
+    INSERT INTO workspace_files (id, workspace_id, filename, content, file_type, language, file_size, file_url, mime_type, drive_file_id, order_index)
+    VALUES (${id}, ${data.workspace_id}, ${data.filename}, ${data.content || ""}, ${
+    data.file_type || "text"
+  }, ${data.language || null}, ${data.file_size || null}, ${data.file_url || null}, ${data.mime_type || null}, ${
+    data.drive_file_id || null
+  }, ${order_index})
     RETURNING *
   `;
 
@@ -187,7 +205,7 @@ export async function getWorkspaceFiles(
   const result = await sql`
     SELECT * FROM workspace_files 
     WHERE workspace_id = ${workspaceId}
-    ORDER BY file_order ASC
+    ORDER BY order_index ASC, created_at ASC
   `;
 
   return result as WorkspaceFile[];
@@ -202,9 +220,9 @@ export async function updateWorkspaceFile(
   const updates: string[] = [];
   const values: any[] = [];
 
-  if (data.name !== undefined) {
-    updates.push(`name = $${values.length + 1}`);
-    values.push(data.name);
+  if (data.filename !== undefined) {
+    updates.push(`filename = $${values.length + 1}`);
+    values.push(data.filename);
   }
   if (data.content !== undefined) {
     updates.push(`content = $${values.length + 1}`);
@@ -214,13 +232,29 @@ export async function updateWorkspaceFile(
     updates.push(`language = $${values.length + 1}`);
     values.push(data.language);
   }
-  if (data.type !== undefined) {
-    updates.push(`type = $${values.length + 1}`);
-    values.push(data.type);
+  if (data.file_type !== undefined) {
+    updates.push(`file_type = $${values.length + 1}`);
+    values.push(data.file_type);
   }
-  if (data.file_order !== undefined) {
-    updates.push(`file_order = $${values.length + 1}`);
-    values.push(data.file_order);
+  if (data.order_index !== undefined) {
+    updates.push(`order_index = $${values.length + 1}`);
+    values.push(data.order_index);
+  }
+  if (data.file_size !== undefined) {
+    updates.push(`file_size = $${values.length + 1}`);
+    values.push(data.file_size);
+  }
+  if (data.file_url !== undefined) {
+    updates.push(`file_url = $${values.length + 1}`);
+    values.push(data.file_url);
+  }
+  if (data.mime_type !== undefined) {
+    updates.push(`mime_type = $${values.length + 1}`);
+    values.push(data.mime_type);
+  }
+  if (data.drive_file_id !== undefined) {
+    updates.push(`drive_file_id = $${values.length + 1}`);
+    values.push(data.drive_file_id);
   }
 
   if (updates.length === 0) {
@@ -304,4 +338,186 @@ export async function cleanupExpiredWorkspaces(): Promise<number> {
   }
 
   return expiredWorkspaces.length;
+}
+
+// Google Drive integration types and functions
+export interface UserDriveTokens {
+  user_id: string;
+  access_token: string;
+  refresh_token: string;
+  expires_at: Date;
+  scope: string;
+  drive_email?: string;
+  total_storage_used: number;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export async function saveUserDriveTokens(data: {
+  user_id: string;
+  access_token: string;
+  refresh_token: string;
+  expires_at: Date;
+  scope: string;
+  drive_email?: string;
+}): Promise<void> {
+  await sql`
+    INSERT INTO user_drive_tokens (
+      user_id, access_token, refresh_token, expires_at, scope, drive_email
+    ) VALUES (
+      ${data.user_id}, ${data.access_token}, ${data.refresh_token}, 
+      ${data.expires_at}, ${data.scope}, ${data.drive_email || null}
+    )
+    ON CONFLICT (user_id) 
+    DO UPDATE SET
+      access_token = EXCLUDED.access_token,
+      refresh_token = EXCLUDED.refresh_token,
+      expires_at = EXCLUDED.expires_at,
+      scope = EXCLUDED.scope,
+      drive_email = EXCLUDED.drive_email,
+      updated_at = CURRENT_TIMESTAMP
+  `;
+}
+
+export async function getUserDriveTokens(
+  user_id: string
+): Promise<UserDriveTokens | null> {
+  const result = await sql`
+    SELECT * FROM user_drive_tokens WHERE user_id = ${user_id}
+  `;
+
+  return result[0]
+    ? {
+        user_id: result[0].user_id,
+        access_token: result[0].access_token,
+        refresh_token: result[0].refresh_token,
+        scope: result[0].scope,
+        drive_email: result[0].drive_email,
+        total_storage_used: result[0].total_storage_used,
+        expires_at: new Date(result[0].expires_at),
+        created_at: new Date(result[0].created_at),
+        updated_at: new Date(result[0].updated_at),
+      }
+    : null;
+}
+
+export async function updateUserStorageUsed(
+  user_id: string,
+  storage_used: number
+): Promise<void> {
+  await sql`
+    UPDATE user_drive_tokens 
+    SET total_storage_used = ${storage_used}, updated_at = CURRENT_TIMESTAMP
+    WHERE user_id = ${user_id}
+  `;
+}
+
+export async function updateWorkspaceDriveFolder(
+  workspace_id: string,
+  drive_folder_id: string
+): Promise<void> {
+  await sql`
+    UPDATE workspaces 
+    SET drive_folder_id = ${drive_folder_id}, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ${workspace_id}
+  `;
+}
+
+export async function updateWorkspaceFileDriveId(
+  file_id: string,
+  drive_file_id: string
+): Promise<void> {
+  await sql`
+    UPDATE workspace_files 
+    SET drive_file_id = ${drive_file_id}, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ${file_id}
+  `;
+}
+
+// Enhanced workspace functions
+export async function getWorkspace(slug: string): Promise<Workspace | undefined> {
+  return await getWorkspaceBySlug(slug) || undefined;
+}
+
+export async function getWorkspacesByUser(
+  user_id: string,
+  page: number = 1,
+  limit: number = 10
+): Promise<Workspace[]> {
+  const offset = (page - 1) * limit;
+
+  const result = await sql`
+    SELECT * FROM workspaces 
+    WHERE user_id = ${user_id}
+    ORDER BY created_at DESC
+    LIMIT ${limit} OFFSET ${offset}
+  `;
+
+  return result as Workspace[];
+}
+
+export async function getWorkspacesCountByUser(user_id: string): Promise<number> {
+  const result = await sql`
+    SELECT COUNT(*) as count FROM workspaces 
+    WHERE user_id = ${user_id}
+  `;
+
+  return parseInt(result[0].count as string);
+}
+
+export async function deleteWorkspaceCompletely(
+  workspace_id: string
+): Promise<void> {
+  // Delete files first (cascading should handle this, but being explicit)
+  await sql`DELETE FROM workspace_files WHERE workspace_id = ${workspace_id}`;
+  await sql`DELETE FROM workspace_views WHERE workspace_id = ${workspace_id}`;
+  await sql`DELETE FROM workspaces WHERE id = ${workspace_id}`;
+}
+
+export async function getUserStorageUsage(user_id: string): Promise<number> {
+  const result = await sql`
+    SELECT COALESCE(SUM(file_size), 0) as total_size
+    FROM workspace_files wf
+    JOIN workspaces w ON wf.workspace_id = w.id
+    WHERE w.user_id = ${user_id}
+  `;
+
+  return parseInt(result[0]?.total_size || "0");
+}
+
+export async function getWorkspaceSize(workspace_id: string): Promise<number> {
+  const result = await sql`
+    SELECT COALESCE(SUM(file_size), 0) as total_size
+    FROM workspace_files
+    WHERE workspace_id = ${workspace_id}
+  `;
+
+  return parseInt(result[0]?.total_size || "0");
+}
+
+export async function getPublicWorkspaces(): Promise<Workspace[]> {
+  const result = await sql`
+    SELECT * FROM workspaces 
+    WHERE is_public = true 
+    AND password_hash IS NULL
+    AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)
+    ORDER BY updated_at DESC
+    LIMIT 1000
+  `;
+
+  return result.map((workspace: any) => ({
+    id: workspace.id,
+    slug: workspace.slug,
+    title: workspace.title,
+    description: workspace.description,
+    user_id: workspace.user_id,
+    password_hash: workspace.password_hash,
+    is_public: workspace.is_public,
+    expires_at: workspace.expires_at
+      ? new Date(workspace.expires_at)
+      : null,
+    drive_folder_id: workspace.drive_folder_id,
+    created_at: new Date(workspace.created_at),
+    updated_at: new Date(workspace.updated_at),
+  }));
 }

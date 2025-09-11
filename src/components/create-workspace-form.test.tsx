@@ -13,7 +13,7 @@ vi.mock("@/hooks/use-file-upload", () => ({
 }));
 
 // Mock database functions
-vi.mock("@/lib/databse", () => ({
+vi.mock("@/lib/database", () => ({
   createWorkspace: vi.fn(() =>
     Promise.resolve({ id: "new-workspace", slug: "new-workspace" })
   ),
@@ -94,7 +94,7 @@ describe("CreateWorkspaceForm", () => {
 
   it("creates workspace with text content", async () => {
     const { createWorkspace, createWorkspaceFile } = await import(
-      "@/lib/databse"
+      "@/lib/database"
     );
 
     render(<CreateWorkspaceForm {...defaultProps} />);
@@ -145,7 +145,7 @@ describe("CreateWorkspaceForm", () => {
   });
 
   it("shows error state when creation fails", async () => {
-    const { createWorkspace } = await import("@/lib/databse");
+    const { createWorkspace } = await import("@/lib/database");
     vi.mocked(createWorkspace).mockRejectedValue(new Error("Creation failed"));
 
     render(<CreateWorkspaceForm {...defaultProps} />);

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { stackServerApp } from "@/stack";
-import { getWorkspacesByUser, getWorkspacesCountByUser } from "@/lib/databse";
+import { getWorkspacesByUser, getWorkspacesCountByUser } from "@/lib/database";
 import { UserDashboard } from "@/components/user-dashboard-minimal";
 import { Metadata } from "next";
 

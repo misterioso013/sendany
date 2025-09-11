@@ -18,7 +18,7 @@ vi.mock("@/lib/google-drive", () => ({
 }));
 
 const { getExpiredWorkspaces, deleteWorkspaceCompletely } = await import(
-  "@/lib/databse"
+  "@/lib/database"
 );
 
 describe("/api/cleanup Route", () => {
@@ -37,6 +37,7 @@ describe("/api/cleanup Route", () => {
           drive_folder_id: undefined,
           slug: "expired-1",
           is_public: true,
+          password_hash: null,
           created_at: new Date(),
           updated_at: new Date(),
         },
@@ -48,6 +49,7 @@ describe("/api/cleanup Route", () => {
           drive_folder_id: "drive-folder-123",
           slug: "expired-2",
           is_public: true,
+          password_hash: null,
           created_at: new Date(),
           updated_at: new Date(),
         },
@@ -84,10 +86,11 @@ describe("/api/cleanup Route", () => {
         {
           id: "expired-1",
           title: "Expired Workspace 1",
-          user_id: undefined,
+          user_id: null,
           drive_folder_id: undefined,
           slug: "expired-1",
           is_public: true,
+          password_hash: null,
           expires_at: new Date(),
           created_at: new Date(),
           updated_at: new Date(),
@@ -152,10 +155,11 @@ describe("/api/cleanup Route", () => {
         {
           id: "expired-1",
           title: "Expired Workspace 1",
-          user_id: undefined,
+          user_id: null,
           drive_folder_id: undefined,
           slug: "expired-1",
           is_public: true,
+          password_hash: null,
           expires_at: new Date(),
           created_at: new Date(),
           updated_at: new Date(),

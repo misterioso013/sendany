@@ -20,7 +20,7 @@ vi.mock("@/stack", () => ({
 }));
 
 const { getWorkspaceById, updateWorkspace, getWorkspaceFiles } = await import(
-  "@/lib/databse"
+  "@/lib/database"
 );
 const { stackServerApp } = await import("@/stack");
 
@@ -38,6 +38,8 @@ describe("/api/workspaces/[id] Route", () => {
     title: "Test Workspace",
     user_id: "user-123",
     is_public: true,
+    password_hash: null,
+    expires_at: null,
     created_at: new Date(),
     updated_at: new Date(),
   };
@@ -77,7 +79,7 @@ describe("/api/workspaces/[id] Route", () => {
     });
 
     it("should return 404 for non-existent workspace", async () => {
-      vi.mocked(getWorkspaceById).mockResolvedValue(undefined);
+      vi.mocked(getWorkspaceById).mockResolvedValue(null);
 
       const request = new NextRequest(
         "http://localhost:3000/api/workspaces/non-existent"

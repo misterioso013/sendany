@@ -6,7 +6,7 @@ import { nanoid } from "nanoid";
 import { Button } from "@/components/ui/button";
 import { FileUploader } from "@/components/file-uploader-minimal";
 import { CodeEditor } from "@/components/code-editor";
-import { createWorkspace, createWorkspaceFile } from "@/lib/databse";
+import { createWorkspace, createWorkspaceFile } from "@/lib/database";
 import { useGoogleDriveStatus } from "@/hooks/use-google-drive-status";
 import type { FileWithPreview } from "@/hooks/use-file-upload";
 import { Upload, FileText, Settings, Save, X, AlertCircle, Cloud, Plus, Trash2 } from "lucide-react";

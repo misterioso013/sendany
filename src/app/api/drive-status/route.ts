@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { stackServerApp } from '@/stack';
-import { getUserDriveTokens, getUserStorageUsage } from '@/lib/databse';
+import { getUserDriveTokens, getUserStorageUsage } from '@/lib/database';
 import { STORAGE_LIMITS } from '@/lib/google-drive';
 
 export async function GET() {

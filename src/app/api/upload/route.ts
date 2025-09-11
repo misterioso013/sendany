@@ -9,7 +9,7 @@ import {
   updateWorkspaceDriveFolder,
   getWorkspaceById,
   saveUserDriveTokens
-} from '@/lib/databse';
+} from '@/lib/database';
 import { stackServerApp } from '@/stack';
 
 export async function POST(request: NextRequest) {

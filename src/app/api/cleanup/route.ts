@@ -4,7 +4,7 @@ import {
   getExpiredWorkspaces, 
   deleteWorkspaceCompletely,
   getUserDriveTokens,
-} from '@/lib/databse';
+} from '@/lib/database';
 
 // This endpoint should be called by a cron job
 export async function POST(request: NextRequest) {

@@ -7,7 +7,7 @@ import {
   createWorkspaceFile,
   deleteWorkspaceFile,
   getWorkspaceFiles
-} from '@/lib/databse';
+} from '@/lib/database';
 
 export async function PUT(
   request: NextRequest,

@@ -1,12 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import bcrypt from "bcryptjs";
-import { nanoid } from "nanoid";
 
-// Mock dependencies
+// Mock the SQL function first
+const mockSql = vi.fn();
+
+// Mock dependencies before imports
 vi.mock("@neondatabase/serverless", () => ({
-  neon: vi.fn(() => {
-    return vi.fn();
-  }),
+  neon: vi.fn(() => mockSql),
 }));
 
 vi.mock("bcryptjs", () => ({
@@ -20,7 +19,9 @@ vi.mock("nanoid", () => ({
   nanoid: vi.fn(),
 }));
 
-// Import functions after mocking
+// Import after mocking
+import bcrypt from "bcryptjs";
+import { nanoid } from "nanoid";
 import {
   createWorkspace,
   getWorkspaceBySlug,
@@ -40,17 +41,10 @@ import {
   cleanupExpiredWorkspaces,
 } from "@/lib/database";
 
-// Get the mocked sql function
-let mockSql = vi.fn();
-
-vi.doMock("@neondatabase/serverless", () => ({
-  neon: () => mockSql,
-}));
-
 describe("Database Functions", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockSql = vi.fn();
+    mockSql.mockClear();
     (nanoid as any).mockReturnValue("mock-id");
     (bcrypt.hash as any).mockResolvedValue("hashed-password");
     (bcrypt.compare as any).mockResolvedValue(true);
@@ -242,12 +236,12 @@ describe("Database Functions", () => {
       const mockFile = {
         id: "mock-id",
         workspace_id: "workspace-1",
-        name: "test.txt",
+        filename: "test.txt",
         content: "Hello World",
         language: "text",
-        type: "text",
-        file_order: 1,
-        google_drive_file_id: null,
+        file_type: "text",
+        order_index: 1,
+        drive_file_id: null,
         created_at: new Date(),
         updated_at: new Date(),
       };
@@ -259,7 +253,7 @@ describe("Database Functions", () => {
 
       const result = await createWorkspaceFile({
         workspace_id: "workspace-1",
-        name: "test.txt",
+        filename: "test.txt",
         content: "Hello World",
       });
 
@@ -272,24 +266,24 @@ describe("Database Functions", () => {
         {
           id: "file-1",
           workspace_id: "workspace-1",
-          name: "file1.txt",
+          filename: "file1.txt",
           content: "Content 1",
           language: "text",
-          type: "text",
-          file_order: 0,
-          google_drive_file_id: null,
+          file_type: "text",
+          order_index: 0,
+          drive_file_id: null,
           created_at: new Date(),
           updated_at: new Date(),
         },
         {
           id: "file-2",
           workspace_id: "workspace-1",
-          name: "file2.js",
+          filename: "file2.js",
           content: 'console.log("Hello");',
           language: "javascript",
-          type: "text",
-          file_order: 1,
-          google_drive_file_id: null,
+          file_type: "text",
+          order_index: 1,
+          drive_file_id: null,
           created_at: new Date(),
           updated_at: new Date(),
         },
@@ -306,12 +300,12 @@ describe("Database Functions", () => {
       const mockFile = {
         id: "file-1",
         workspace_id: "workspace-1",
-        name: "updated.txt",
+        filename: "updated.txt",
         content: "Updated content",
         language: "text",
-        type: "text",
-        file_order: 0,
-        google_drive_file_id: null,
+        file_type: "text",
+        order_index: 0,
+        drive_file_id: null,
         created_at: new Date(),
         updated_at: new Date(),
       };
@@ -319,7 +313,7 @@ describe("Database Functions", () => {
       mockSql.mockResolvedValue([mockFile]);
 
       const result = await updateWorkspaceFile("file-1", {
-        name: "updated.txt",
+        filename: "updated.txt",
         content: "Updated content",
       });
 
