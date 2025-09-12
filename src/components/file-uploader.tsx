@@ -5,6 +5,7 @@ import { useFileUpload, type FileWithPreview } from "@/hooks/use-file-upload";
 import { Button } from "@/components/ui/button";
 import { Upload, X, File, Image as ImageIcon, Code, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 interface FileUploaderProps {
   onFilesChange?: (files: FileWithPreview[]) => void;
@@ -179,7 +180,7 @@ export function FileUploader({
                   </div>
 
                   {fileWithPreview.preview && (
-                    <img
+                    <Image
                       src={fileWithPreview.preview}
                       alt={`Preview of ${file.name}`}
                       className="w-10 h-10 object-cover rounded"

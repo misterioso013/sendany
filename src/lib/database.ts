@@ -290,7 +290,6 @@ export async function deleteWorkspaceFile(id: string): Promise<boolean> {
 export async function deleteWorkspaceFiles(
   workspaceId: string
 ): Promise<boolean> {
-  const result =
     await sql`DELETE FROM workspace_files WHERE workspace_id = ${workspaceId}`;
   return true; // Always return true for bulk delete
 }

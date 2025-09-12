@@ -19,6 +19,7 @@ import {
   ChevronLeft
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 type Language = "javascript" | "typescript" | "css" | "html" | "json" | "markdown" | "python" | "sql" | "text";
 
@@ -149,7 +150,7 @@ export function WorkspaceViewer({ workspace, files }: WorkspaceViewerProps) {
       if (file.mime_type?.startsWith('image/')) {
         return (
           <div className="flex items-center justify-center h-full p-4 md:p-8">
-            <img
+            <Image
               src={file.file_url}
               alt={file.filename}
               className="max-w-full max-h-full object-contain rounded-lg shadow-lg"
