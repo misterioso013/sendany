@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-// Mock the SQL function first
-const mockSql = vi.fn();
+// Use vi.hoisted to create mock that can be referenced later
+const mockSql = vi.hoisted(() => vi.fn());
 
 // Mock dependencies before imports
 vi.mock("@neondatabase/serverless", () => ({

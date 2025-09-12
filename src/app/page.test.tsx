@@ -7,19 +7,21 @@ vi.mock("@/stack", () => ({
   stackServerApp: {
     getUser: vi.fn(),
   },
+}));
+
+// Mock Stack Auth UserButton
+vi.mock("@stackframe/stack", () => ({
   UserButton: () => <div data-testid="user-button">User Button</div>,
 }));
 
 // Mock Next.js Link
-vi.mock("next/link", () => {
-  const MockLink = ({ children, href, ...props }: any) => (
+vi.mock("next/link", () => ({
+  default: ({ children, href, ...props }: any) => (
     <a href={href} {...props}>
       {children}
     </a>
-  );
-  MockLink.displayName = "MockLink";
-  return MockLink;
-});
+  ),
+}));
 
 // Mock components
 vi.mock("@/components/home-content", () => ({

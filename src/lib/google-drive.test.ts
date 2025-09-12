@@ -1,22 +1,23 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { GoogleDriveService, STORAGE_LIMITS } from "./google-drive";
 
-// Mock googleapis
-const mockDrive = {
+// Use vi.hoisted to create mocks that can be referenced later
+const mockOAuth2 = vi.hoisted(() => ({
+  setCredentials: vi.fn(),
+  refreshAccessToken: vi.fn(),
+  getAccessToken: vi.fn(),
+}));
+
+const mockDrive = vi.hoisted(() => ({
   files: {
     create: vi.fn(),
     get: vi.fn(),
     delete: vi.fn(),
     list: vi.fn(),
   },
-};
+}));
 
-const mockOAuth2 = {
-  setCredentials: vi.fn(),
-  refreshAccessToken: vi.fn(),
-  getAccessToken: vi.fn(),
-};
-
+// Mock googleapis
 vi.mock("googleapis", () => ({
   google: {
     drive: () => mockDrive,
