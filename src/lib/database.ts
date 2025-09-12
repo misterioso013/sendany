@@ -1,8 +1,16 @@
+'use server';
 import { neon } from "@neondatabase/serverless";
 import bcrypt from "bcryptjs";
 import { nanoid } from "nanoid";
+import { z } from "zod/v4";
 
-const sql = neon(process.env.DATABASE_URL!);
+const environmentSchema = z.object({
+  DATABASE_URL: z.url({
+    message: "Invalid or missing DATABASE_URL environment variable",
+  })
+});
+
+const sql = neon(environmentSchema.parse(process.env).DATABASE_URL);
 
 export interface Workspace {
   id: string;
