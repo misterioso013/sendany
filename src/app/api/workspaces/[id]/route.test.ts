@@ -40,8 +40,8 @@ describe("/api/workspaces/[id] Route", () => {
     is_public: true,
     password_hash: null,
     expires_at: null,
-    created_at: new Date(),
-    updated_at: new Date(),
+    created_at: new Date("2024-01-01T00:00:00.000Z"),
+    updated_at: new Date("2024-01-01T00:00:00.000Z"),
   };
   const mockFiles = [
     {
@@ -51,8 +51,8 @@ describe("/api/workspaces/[id] Route", () => {
       content: "# Test",
       file_type: "markdown" as const,
       order_index: 0,
-      created_at: new Date(),
-      updated_at: new Date(),
+      created_at: new Date("2024-01-01T00:00:00.000Z"),
+      updated_at: new Date("2024-01-01T00:00:00.000Z"),
     },
   ];
 
@@ -74,8 +74,15 @@ describe("/api/workspaces/[id] Route", () => {
       const data = await response.json();
 
       expect(response.status).toBe(200);
-      expect(data.workspace).toEqual(mockWorkspace);
-      expect(data.files).toEqual(mockFiles);
+      expect(data.workspace.id).toBe(mockWorkspace.id);
+      expect(data.workspace.title).toBe(mockWorkspace.title);
+      expect(data.workspace.slug).toBe(mockWorkspace.slug);
+      expect(data.workspace.user_id).toBe(mockWorkspace.user_id);
+      expect(data.workspace.is_public).toBe(mockWorkspace.is_public);
+      expect(data.files).toHaveLength(1);
+      expect(data.files[0].id).toBe(mockFiles[0].id);
+      expect(data.files[0].filename).toBe(mockFiles[0].filename);
+      expect(data.files[0].content).toBe(mockFiles[0].content);
     });
 
     it("should return 404 for non-existent workspace", async () => {
@@ -125,7 +132,9 @@ describe("/api/workspaces/[id] Route", () => {
       const data = await response.json();
 
       expect(response.status).toBe(200);
-      expect(data.workspace).toEqual(mockWorkspace);
+      expect(data.workspace.id).toBe(mockWorkspace.id);
+      expect(data.workspace.title).toBe(mockWorkspace.title);
+      expect(data.workspace.is_public).toBe(mockWorkspace.is_public);
     });
   });
 

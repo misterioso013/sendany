@@ -18,6 +18,7 @@ vi.mock("@/lib/database", () => ({
   updateWorkspaceDriveFolder: vi.fn(),
   updateWorkspaceFileDriveId: vi.fn(),
   getUserDriveTokens: vi.fn(),
+  saveUserDriveTokens: vi.fn(),
 }));
 
 vi.mock("@/lib/google-drive", () => ({
@@ -27,6 +28,13 @@ vi.mock("@/lib/google-drive", () => ({
     createWorkspaceFolder: vi.fn(),
     uploadFile: vi.fn(),
     initializeFromTokens: vi.fn(),
+    setCredentials: vi.fn(),
+    refreshTokens: vi.fn(),
+  },
+  STORAGE_LIMITS: {
+    MAX_FILE_SIZE: 100 * 1024 * 1024, // 100MB
+    MAX_WORKSPACE_SIZE: 500 * 1024 * 1024, // 500MB
+    MAX_USER_STORAGE: 2 * 1024 * 1024 * 1024, // 2GB
   },
 }));
 
@@ -36,6 +44,7 @@ const {
   createWorkspaceFile,
   getUserStorageUsage,
   getWorkspaceSize,
+  getUserDriveTokens,
 } = await import("@/lib/database");
 const { driveService } = await import("@/lib/google-drive");
 
@@ -65,6 +74,29 @@ describe("/api/upload Route", () => {
     vi.mocked(getUserStorageUsage).mockResolvedValue(0);
     vi.mocked(getWorkspaceSize).mockResolvedValue(0);
     vi.mocked(driveService.validateFile).mockReturnValue({ valid: true });
+    vi.mocked(driveService.setCredentials).mockReturnValue(undefined);
+    vi.mocked(driveService.createSendAnyFolder).mockResolvedValue("main-folder-id");
+    vi.mocked(driveService.createWorkspaceFolder).mockResolvedValue("workspace-folder-id");
+    vi.mocked(driveService.uploadFile).mockResolvedValue({
+      id: "drive-file-id",
+      name: "test.txt",
+      size: 12,
+      mimeType: "text/plain",
+      webViewLink: "https://drive.google.com/file/d/drive-file-id/view",
+    });
+    
+    // Mock Google Drive tokens for authenticated user
+    vi.mocked(getUserDriveTokens).mockResolvedValue({
+      user_id: "user-123",
+      access_token: "mock-access-token",
+      refresh_token: "mock-refresh-token",
+      expires_at: new Date(Date.now() + 3600000), // 1 hour from now
+      scope: "https://www.googleapis.com/auth/drive.file",
+      drive_email: "test@example.com",
+      total_storage_used: 0,
+      created_at: new Date(),
+      updated_at: new Date(),
+    });
   });
 
   it("should upload file successfully", async () => {
@@ -112,8 +144,8 @@ describe("/api/upload Route", () => {
 
     expect(response.status).toBe(200);
     expect(data.success).toBe(true);
-    expect(data.file).toBeDefined();
-    expect(data.file.filename).toBe("test.txt");
+    expect(data.driveFile).toBeDefined();
+    expect(data.driveFile.name).toBe("test.txt");
   });
 
   it("should return 401 for unauthenticated user", async () => {
@@ -133,6 +165,25 @@ describe("/api/upload Route", () => {
 
     expect(response.status).toBe(401);
     expect(data.error).toBe("Authentication required");
+  });
+
+  it("should return 400 when Google Drive is not connected", async () => {
+    vi.mocked(getUserDriveTokens).mockResolvedValue(null);
+
+    const formData = new FormData();
+    formData.append("file", new File(["test"], "test.txt"));
+    formData.append("workspaceId", "workspace-123");
+
+    const request = new NextRequest("http://localhost:3000/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    const response = await POST(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(data.error).toBe("Google Drive not connected. Please connect your Google Drive first.");
   });
 
   it("should return 404 for non-existent workspace", async () => {
@@ -234,6 +285,6 @@ describe("/api/upload Route", () => {
     const data = await response.json();
 
     expect(response.status).toBe(400);
-    expect(data.error).toBe("No file provided");
+    expect(data.error).toBe("Missing required fields: file, workspaceId");
   });
 });

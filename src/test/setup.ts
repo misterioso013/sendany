@@ -1,7 +1,11 @@
 import "@testing-library/jest-dom";
+import React from "react";
 import { beforeAll, afterEach, afterAll, vi } from "vitest";
 import { cleanup } from "@testing-library/react";
 import { server } from "./mocks/server";
+
+// Make React globally available
+global.React = React;
 
 // Environment variables
 process.env.DATABASE_URL = "postgresql://test:test@localhost:5432/test";
